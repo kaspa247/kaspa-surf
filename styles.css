@@ -90,6 +90,9 @@ li {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 li:hover {
@@ -128,6 +131,51 @@ a:hover {
     background: rgba(255, 255, 255, 0.05); /* Subtle surf mist */
     padding: 1rem;
     border-radius: 8px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-left: 0.5rem;
+    animation: fadeIn 1s ease-in-out; /* Subtle entrance */
+    white-space: nowrap;
+}
+
+.new {
+    background: rgba(0, 180, 216, 0.3); /* Teal glow matching your accent */
+    color: #00d4ff;
+    box-shadow: 0 0 5px rgba(0, 180, 216, 0.5);
+}
+
+.hot {
+    background: rgba(255, 100, 0, 0.3); /* Warm orange for fire, contrasts teal */
+    color: #ff4500;
+    box-shadow: 0 0 5px rgba(255, 100, 0, 0.5);
+    animation: pulse 2s infinite alternate; /* Gentle throb */
+}
+
+.rec {
+    background: rgba(255, 215, 0, 0.3); /* Gold for stars */
+    color: #ffd700;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    animation: none; /* Static for recommended */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .badge { animation: none; }
 }
 
 footer {
