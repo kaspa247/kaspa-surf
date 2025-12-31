@@ -1,0 +1,81 @@
+<form action="https://formspree.io/f/xykyrore" method="POST">
+  <h2>Kaspa247 Link Request / Update</h2>
+
+  <label>Request type *</label>
+  <select name="request_type" required>
+    <option value="">Select…</option>
+    <option>New link</option>
+    <option>Update existing link</option>
+    <option>Remove link</option>
+  </select>
+
+  <label>Project / Site name *</label>
+  <input type="text" name="project_name" required>
+
+  <label>URL *</label>
+  <input type="url" name="url" placeholder="https://…" required>
+
+  <label>Category *</label>
+  <select name="category" required>
+    <option value="">Select…</option>
+    <option>Wallets</option>
+    <option>Exchanges (CEX)</option>
+    <option>DEX / Swaps</option>
+    <option>Explorers / Analytics</option>
+    <option>Mining (ASIC/Pool/Hosting)</option>
+    <option>Nodes / Dev Tools</option>
+    <option>KRC-20 / KRC-721 / Marketplaces</option>
+    <option>Domains / KNS</option>
+    <option>News / Media</option>
+    <option>Communities (Telegram/Discord/X)</option>
+    <option>Merch / Shops</option>
+    <option>Education / Guides</option>
+    <option>Security / Scam Reports</option>
+    <option>Other</option>
+  </select>
+
+  <label>Short description *</label>
+  <textarea name="description" rows="4" required></textarea>
+
+  <label>If updating/removing: existing Kaspa247 listing URL</label>
+  <input type="url" name="existing_listing_url" placeholder="https://kaspa247.com/...">
+
+  <label>What should change? (optional)</label>
+  <input type="text" name="requested_changes" placeholder="e.g. Update description + new URL">
+
+  <label>Are you the owner/maintainer?</label>
+  <select name="owner" >
+    <option value="">Select…</option>
+    <option>Yes</option>
+    <option>No</option>
+  </select>
+
+  <label>Official contact (email or Telegram) (optional)</label>
+  <input type="text" name="contact">
+
+  <label>Primary social link (optional)</label>
+  <input type="url" name="social" placeholder="https://x.com/... or https://t.me/...">
+
+  <hr>
+
+  <label>Would you like it featured? (100 KAS/week)</label>
+  <select name="featured" id="featured">
+    <option>No</option>
+    <option>Yes</option>
+  </select>
+
+  <div style="margin:10px 0; padding:10px; border:1px solid #333; border-radius:8px;">
+    <strong>Featured info:</strong><br>
+    Featured listings appear at the top for 7 days (placement only).<br>
+    Payment: <code>kaspa:YOUR_KASPA_ADDRESS_HERE</code><br>
+    We’ll reply with confirmation + start date.
+  </div>
+
+  <label>Human check: What chain is this for? *</label>
+  <input type="text" name="human_check" required placeholder="Kaspa">
+
+  <!-- honeypot -->
+  <input type="text" name="_gotcha" style="display:none">
+
+  <button type="submit">Submit</button>
+</form>
