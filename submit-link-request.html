@@ -1,3 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaspa Surf - Submit a Link Request</title> <!-- Optimized title with keywords -->
+    <meta name="description" content="Ride the BlockDAG wave with Kaspa Surf: A curated directory of Kaspa links including wallets, explorers, exchanges, mining pools, and community resources for the fastest PoW blockchain."> <!-- 150-160 chars for SEO -->
+    <meta name="keywords" content="Kaspa links, Kaspa resources, BlockDAG directory, Kaspa wallets, Kaspa explorers, Kaspa mining, cryptocurrency links"> <!-- Relevant keywords -->
+    <meta name="robots" content="index, follow"> <!-- Allow indexing -->
+    
+    <!-- Open Graph for social sharing -->
+    <meta property="og:title" content="Kaspa Surf - Essential Kaspa Crypto Links">
+    <meta property="og:description" content="Discover curated resources for Kaspa: Wallets, exchanges, mining, and more.">
+    <meta property="og:url" content="https://kaspa.surf/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://kaspa.surf/favicon.png"> <!-- Add a share image later -->
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kaspa Surf - Curated Kaspa Links">
+    <meta name="twitter:description" content="Ride the wave of Kaspa resources.">
+    
+    <link rel="canonical" href="https://kaspa.surf/"> <!-- Prevent duplicate content issues -->
+    <link rel="icon" href="/favicon.png" type="image/x-icon"> <!-- Favicon link; upload favicon.ico to root -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> <!-- Font Awesome for icons -->
+    
+    <!-- Schema.org JSON-LD for SEO (WebSite + CollectionPage) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Kaspa Surf",
+      "url": "https://kaspa.surf/",
+      "description": "Curated directory of Kaspa cryptocurrency resources",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://kaspa.surf/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "mainEntity": {
+        "@type": "CollectionPage",
+        "name": "Kaspa Links Directory",
+        "hasPart": [
+          {"@type": "ItemList", "name": "Featured Links", "itemListElement": ["https://kaspa.org/", "https://explorer.kaspa.org/"]},
+          {"@type": "ItemList", "name": "Wallets", "itemListElement": ["https://wallet.kaspanet.io/"]}
+        ]
+      }
+    }
+    </script>
+</head>
+<body class="dark">
+    <header>
+        <h1>Kaspa Surf 🌊</h1>
+        <p class="subtitle">Ride the BlockDAG wave: Curated Kaspa links</p>
+        <button id="mode-toggle" aria-label="Toggle light/dark mode">🌙</button>
+    </header>
+    
+    <main>
 <section class="category" id="link-request">
   <h2>Request a Link Add / Update</h2>
   <p class="subtitle">Submit a new Kaspa link, update an existing one, or request a removal.</p>
@@ -126,3 +189,45 @@
     </div>
   </form>
 </section>
+    </main>
+    
+    <footer>
+        <p class="footer-text">&copy; 2025 Kaspa Surf. Curated links for the Kaspa ecosystem. Not affiliated with Kaspa.org. Last Updated: December 31, 2025 ⏰</p>
+        <p class="footer-text">This site is made for the Kaspa Community if you found useful please consider supporting <a href="https://tipme.kas/" target="_blank" rel="noopener noreferrer">Donate or Tip KAS to tipme.kas</a></p>
+        <p class="footer-text">While every effort has been made to ensure the accuracy of these links, we are not responsible for the content of external sites or any changes to them.</p>
+        <div class="social-icons">
+            <a href="https://t.me/bit808" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+        <a href="https://x.com/testnet420" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+    </footer>
+    
+    <script>
+        const toggle = document.getElementById('mode-toggle');
+        const body = document.body;
+        
+        toggle.addEventListener('click', () => {
+            body.classList.toggle('dark');
+            toggle.textContent = body.classList.contains('dark') ? '🌙' : '☀️';
+        });
+        // Rotating subtitles with fade animation
+        const subtitles = [
+            "Catch the Kaspa Wave: Epic Links for Your BlockDAG Adventure!",
+            "BlockDAG Barrel Roll: Kaspa Links That'll Make You Say 'Whoa, Dude!'",
+            "Surf's Up on Kaspa: Dive into Curated Crypto Links!"
+        ];
+        let currentIndex = 0;
+        const subtitleElement = document.querySelector('.subtitle');
+        
+        function rotateSubtitle() {
+            subtitleElement.style.opacity = 0; // Fade out
+            setTimeout(() => {
+                subtitleElement.textContent = subtitles[currentIndex];
+                currentIndex = (currentIndex + 1) % subtitles.length;
+                subtitleElement.style.opacity = 1; // Fade in
+            }, 500); // Match transition duration
+        }
+        
+        setInterval(rotateSubtitle, 10000); // Rotate every 10 seconds
+    </script>
+</body>
+</html>
