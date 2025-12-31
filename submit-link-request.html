@@ -1,81 +1,128 @@
-<form action="https://formspree.io/f/xykyrore" method="POST">
-  <h2>Kaspa247 Link Request / Update</h2>
+<section class="category" id="link-request">
+  <h2>Request a Link Add / Update</h2>
+  <p class="subtitle">Submit a new Kaspa link, update an existing one, or request a removal.</p>
 
-  <label>Request type *</label>
-  <select name="request_type" required>
-    <option value="">Select…</option>
-    <option>New link</option>
-    <option>Update existing link</option>
-    <option>Remove link</option>
-  </select>
+  <form class="kaspa-form" action="https://formspree.io/f/xykyrore" method="POST">
+    <div class="form-grid">
+      <div class="field">
+        <label for="request_type">Request type <span class="req">*</span></label>
+        <select id="request_type" name="request_type" required>
+          <option value="" selected disabled>Select…</option>
+          <option>New link</option>
+          <option>Update existing link</option>
+          <option>Remove link</option>
+        </select>
+      </div>
 
-  <label>Project / Site name *</label>
-  <input type="text" name="project_name" required>
+      <div class="field">
+        <label for="category">Category <span class="req">*</span></label>
+        <select id="category" name="category" required>
+          <option value="" selected disabled>Select…</option>
+          <option>Wallets</option>
+          <option>Exchanges (CEX)</option>
+          <option>DEX / Swaps</option>
+          <option>Explorers / Analytics</option>
+          <option>Mining (ASIC/Pool/Hosting)</option>
+          <option>Nodes / Dev Tools</option>
+          <option>KRC-20 / KRC-721 / Marketplaces</option>
+          <option>Domains / KNS</option>
+          <option>News / Media</option>
+          <option>Communities (Telegram/Discord/X)</option>
+          <option>Merch / Shops</option>
+          <option>Education / Guides</option>
+          <option>Security / Scam Reports</option>
+          <option>Other</option>
+        </select>
+      </div>
 
-  <label>URL *</label>
-  <input type="url" name="url" placeholder="https://…" required>
+      <div class="field">
+        <label for="project_name">Project / Site name <span class="req">*</span></label>
+        <input id="project_name" type="text" name="project_name" placeholder="e.g., Kaspium Wallet" required>
+      </div>
 
-  <label>Category *</label>
-  <select name="category" required>
-    <option value="">Select…</option>
-    <option>Wallets</option>
-    <option>Exchanges (CEX)</option>
-    <option>DEX / Swaps</option>
-    <option>Explorers / Analytics</option>
-    <option>Mining (ASIC/Pool/Hosting)</option>
-    <option>Nodes / Dev Tools</option>
-    <option>KRC-20 / KRC-721 / Marketplaces</option>
-    <option>Domains / KNS</option>
-    <option>News / Media</option>
-    <option>Communities (Telegram/Discord/X)</option>
-    <option>Merch / Shops</option>
-    <option>Education / Guides</option>
-    <option>Security / Scam Reports</option>
-    <option>Other</option>
-  </select>
+      <div class="field">
+        <label for="url">URL <span class="req">*</span></label>
+        <input id="url" type="url" name="url" placeholder="https://…" required>
+      </div>
 
-  <label>Short description *</label>
-  <textarea name="description" rows="4" required></textarea>
+      <div class="field full">
+        <label for="description">Short description <span class="req">*</span></label>
+        <textarea id="description" name="description" rows="4" placeholder="1–2 sentences. What is it and why it matters?" required></textarea>
+      </div>
 
-  <label>If updating/removing: existing Kaspa247 listing URL</label>
-  <input type="url" name="existing_listing_url" placeholder="https://kaspa247.com/...">
+      <div class="field full">
+        <label for="existing_listing_url">If updating/removing: existing Kaspa247 listing URL</label>
+        <input id="existing_listing_url" type="url" name="existing_listing_url" placeholder="https://kaspa247.com/...">
+      </div>
 
-  <label>What should change? (optional)</label>
-  <input type="text" name="requested_changes" placeholder="e.g. Update description + new URL">
+      <div class="field full">
+        <label for="requested_changes">What should change?</label>
+        <input id="requested_changes" type="text" name="requested_changes" placeholder="e.g., new URL + updated description + rebrand">
+      </div>
 
-  <label>Are you the owner/maintainer?</label>
-  <select name="owner" >
-    <option value="">Select…</option>
-    <option>Yes</option>
-    <option>No</option>
-  </select>
+      <div class="field">
+        <label for="owner">Are you the owner/maintainer?</label>
+        <select id="owner" name="owner">
+          <option value="" selected>Select…</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
 
-  <label>Official contact (email or Telegram) (optional)</label>
-  <input type="text" name="contact">
+      <div class="field">
+        <label for="contact">Official contact (email or Telegram)</label>
+        <input id="contact" type="text" name="contact" placeholder="e.g., admin@site.com or @telegramhandle">
+      </div>
 
-  <label>Primary social link (optional)</label>
-  <input type="url" name="social" placeholder="https://x.com/... or https://t.me/...">
+      <div class="field full">
+        <label for="social">Primary social link</label>
+        <input id="social" type="url" name="social" placeholder="https://x.com/... or https://t.me/...">
+      </div>
 
-  <hr>
+      <div class="field full">
+        <div class="featured-box">
+          <div class="featured-top">
+            <label for="featured" class="featured-label">Would you like it featured? <span class="badge new">100 KAS/week</span></label>
+            <select id="featured" name="featured">
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+          <p class="featured-note">
+            Featured listings appear at the top of the directory/category for 7 days (placement only).
+            Payment wallet: <code class="kas-code">kaspa:YOUR_KASPA_ADDRESS_HERE</code>
+          </p>
 
-  <label>Would you like it featured? (100 KAS/week)</label>
-  <select name="featured" id="featured">
-    <option>No</option>
-    <option>Yes</option>
-  </select>
+          <div class="form-grid" style="margin-top:0.75rem;">
+            <div class="field">
+              <label for="featured_text">Preferred display text (optional)</label>
+              <input id="featured_text" type="text" name="featured_text" placeholder="e.g., Kaspium — Best mobile wallet">
+            </div>
+            <div class="field">
+              <label for="featured_start">Preferred start date (optional)</label>
+              <input id="featured_start" type="date" name="featured_start">
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <div style="margin:10px 0; padding:10px; border:1px solid #333; border-radius:8px;">
-    <strong>Featured info:</strong><br>
-    Featured listings appear at the top for 7 days (placement only).<br>
-    Payment: <code>kaspa:YOUR_KASPA_ADDRESS_HERE</code><br>
-    We’ll reply with confirmation + start date.
-  </div>
+      <div class="field">
+        <label for="human_check">Human check: what chain is this for? <span class="req">*</span></label>
+        <input id="human_check" type="text" name="human_check" placeholder="Kaspa" required>
+      </div>
 
-  <label>Human check: What chain is this for? *</label>
-  <input type="text" name="human_check" required placeholder="Kaspa">
+      <div class="field">
+        <label for="email">Your email (optional)</label>
+        <input id="email" type="email" name="email" placeholder="So we can reply">
+      </div>
+    </div>
 
-  <!-- honeypot -->
-  <input type="text" name="_gotcha" style="display:none">
+    <!-- Honeypot (bots fill, humans won't) -->
+    <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off">
 
-  <button type="submit">Submit</button>
-</form>
+    <div class="actions">
+      <button class="btn-primary" type="submit">Submit request</button>
+      <span class="fineprint">By submitting, you confirm the info is accurate. We may decline scams/misleading links.</span>
+    </div>
+  </form>
+</section>
