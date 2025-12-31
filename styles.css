@@ -193,3 +193,40 @@ footer {
     #featured-section { grid-template-columns: 1fr; }
     #categories { grid-template-columns: 1fr; }
 }
+
+/* Subtitle fade animation */
+.subtitle {
+    transition: opacity 0.5s ease; /* Smooth fade */
+}
+
+/* Prettier footer styles */
+footer {
+    text-align: center;
+    padding: 2rem 1rem; /* More padding for breathing room */
+    background: rgba(0, 0, 0, 0.2); /* Subtle overlay like header */
+    border-top: 2px solid var(--accent-color); /* Thicker border for emphasis */
+    margin-top: 2rem; /* Space from main content */
+}
+
+.footer-text {
+    margin: 0.5rem 0; /* Better spacing between paragraphs */
+    font-size: 0.9rem;
+}
+
+.social-icons {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem; /* Space between icons */
+}
+
+.social-icons a {
+    color: var(--link-color);
+    font-size: 1.5rem; /* Larger icons for visibility */
+    transition: color 0.3s, transform 0.3s;
+}
+
+.social-icons a:hover {
+    color: var(--accent-color);
+    transform: scale(1.2); /* Subtle hover effect */
+}
