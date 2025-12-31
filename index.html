@@ -27,6 +27,7 @@
 
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- Font Awesome for icons -->
     
     <!-- Schema.org JSON-LD for SEO (WebSite + CollectionPage) -->
     <script type="application/ld+json">
@@ -186,9 +187,13 @@
     </main>
     
     <footer>
-        <p>&copy; 2025 Kaspa Surf. Curated links for the Kaspa ecosystem. Not affiliated with Kaspa.org. Last Updated: December 31, 2025 ⏰</p>
-        <p>This site is made for the Kaspa Community if you found useful please consider supporting <a href="https://tipme.kas/" target="_blank" rel="noopener noreferrer">Donate or Tip KAS to tipme.kas</a></p>
-        <p>While every effort has been made to ensure the accuracy of these links, we are not responsible for the content of external sites or any changes to them.</p>
+        <p class="footer-text">&copy; 2025 Kaspa Surf. Curated links for the Kaspa ecosystem. Not affiliated with Kaspa.org. Last Updated: December 31, 2025 ⏰</p>
+        <p class="footer-text">This site is made for the Kaspa Community if you found useful please consider supporting <a href="https://tipme.kas/" target="_blank" rel="noopener noreferrer">Donate or Tip KAS to tipme.kas</a></p>
+        <p class="footer-text">While every effort has been made to ensure the accuracy of these links, we are not responsible for the content of external sites or any changes to them.</p>
+        <div class="social-icons">
+            <a href="https://t.me/Kaspaenglish" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://twitter.com/KaspaCurrency" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><i class="fab fa-twitter"></i></a>
+        </div>
     </footer>
     
     <script>
@@ -199,6 +204,25 @@
             body.classList.toggle('dark');
             toggle.textContent = body.classList.contains('dark') ? '🌙' : '☀️';
         });
+        // Rotating subtitles with fade animation
+        const subtitles = [
+            "Catch the Kaspa Wave: Epic Links for Your BlockDAG Adventure!",
+            "BlockDAG Barrel Roll: Kaspa Links That'll Make You Say 'Whoa, Dude!'",
+            "Surf's Up on Kaspa: Dive into Curated Crypto Links!"
+        ];
+        let currentIndex = 0;
+        const subtitleElement = document.querySelector('.subtitle');
+        
+        function rotateSubtitle() {
+            subtitleElement.style.opacity = 0; // Fade out
+            setTimeout(() => {
+                subtitleElement.textContent = subtitles[currentIndex];
+                currentIndex = (currentIndex + 1) % subtitles.length;
+                subtitleElement.style.opacity = 1; // Fade in
+            }, 500); // Match transition duration
+        }
+        
+        setInterval(rotateSubtitle, 7000); // Rotate every 7 seconds
     </script>
 </body>
 </html>
