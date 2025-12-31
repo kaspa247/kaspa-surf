@@ -217,12 +217,12 @@ footer {
     margin-top: 1rem;
     display: flex;
     justify-content: center;
-    gap: 2.0rem; /* Space between icons */
+    gap: 1.75rem; /* Space between icons */
 }
 
 .social-icons a {
     color: var(--link-color);
-    font-size: 2.0rem; /* Larger icons for visibility */
+    font-size: 1.75rem; /* Larger icons for visibility */
     transition: color 0.3s, transform 0.3s;
 }
 
