@@ -230,3 +230,114 @@ footer {
     color: var(--accent-color);
     transform: scale(1.2); /* Subtle hover effect */
 }
+.kaspa-form {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 180, 216, 0.25);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.field { display: flex; flex-direction: column; gap: 0.35rem; }
+.field.full { grid-column: 1 / -1; }
+
+label {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.req { color: var(--accent-color); margin-left: 0.15rem; }
+
+input, select, textarea {
+  background: var(--bg-secondary);
+  color: var(--text-color);
+  border: 1px solid rgba(0, 180, 216, 0.25);
+  border-radius: 8px;
+  padding: 0.75rem 0.8rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+  font-family: 'Roboto', sans-serif;
+}
+
+textarea { resize: vertical; }
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 10px rgba(0, 180, 216, 0.25);
+}
+
+input::placeholder, textarea::placeholder { color: rgba(224,224,224,0.65); }
+body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { color: rgba(18,18,18,0.55); }
+
+.featured-box {
+  background: rgba(0, 180, 216, 0.07);
+  border: 1px solid rgba(0, 180, 216, 0.25);
+  border-radius: 8px;
+  padding: 0.9rem;
+}
+
+.featured-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.featured-label { margin: 0; }
+
+.featured-note {
+  margin: 0.6rem 0 0;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.kas-code {
+  background: rgba(0,0,0,0.25);
+  padding: 0.15rem 0.35rem;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 180, 216, 0.25);
+}
+
+.actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: rgba(0, 180, 216, 0.18);
+  color: var(--text-color);
+  border: 1px solid rgba(0, 180, 216, 0.45);
+  border-radius: 8px;
+  padding: 0.75rem 1.1rem;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 14px rgba(0, 180, 216, 0.25);
+}
+
+.fineprint {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.hp { display:none !important; }
+
+@media (max-width: 768px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
