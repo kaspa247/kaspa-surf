@@ -3,9 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaspa Surf</title>
+    <title>Kaspa Surf - Curated Kaspa Cryptocurrency Links & Resources</title> <!-- Optimized title with keywords -->
+    <meta name="description" content="Ride the BlockDAG wave with Kaspa Surf: A curated directory of Kaspa links including wallets, explorers, exchanges, mining pools, and community resources for the fastest PoW blockchain."> <!-- 150-160 chars for SEO -->
+    <meta name="keywords" content="Kaspa links, Kaspa resources, BlockDAG directory, Kaspa wallets, Kaspa explorers, Kaspa mining, cryptocurrency links"> <!-- Relevant keywords -->
+    <meta name="robots" content="index, follow"> <!-- Allow indexing -->
+    
+    <!-- Open Graph for social sharing -->
+    <meta property="og:title" content="Kaspa Surf - Essential Kaspa Crypto Links">
+    <meta property="og:description" content="Discover curated resources for Kaspa: Wallets, exchanges, mining, and more.">
+    <meta property="og:url" content="https://kaspa.surf/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://kaspa.surf/wave-icon.png"> <!-- Add a share image later -->
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kaspa Surf - Curated Kaspa Links">
+    <meta name="twitter:description" content="Ride the wave of Kaspa resources.">
+    
+    <link rel="canonical" href="https://kaspa.surf/"> <!-- Prevent duplicate content issues -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"> <!-- Favicon link; upload favicon.ico to root -->
+    
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Schema.org JSON-LD for SEO (WebSite + CollectionPage) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Kaspa Surf",
+      "url": "https://kaspa.surf/",
+      "description": "Curated directory of Kaspa cryptocurrency resources",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://kaspa.surf/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "mainEntity": {
+        "@type": "CollectionPage",
+        "name": "Kaspa Links Directory",
+        "hasPart": [
+          {"@type": "ItemList", "name": "Featured Links", "itemListElement": ["https://kaspa.org/", "https://explorer.kaspa.org/"]},
+          {"@type": "ItemList", "name": "Wallets", "itemListElement": ["https://wallet.kaspanet.io/"]}
+        ]
+      }
+    }
+    </script>
 </head>
 <body class="dark">
     <header>
@@ -141,10 +184,9 @@
     </main>
     
     <footer>
-        <p>&copy; 2025 Kaspa Surf. Curated links for the Kaspa ecosystem. Not affiliated with Kaspa.org.</p>
-                <p>While every effort has been made to ensure the accuracy of these links, we are not responsible for the content of external sites or any changes to them.</p>
-        <p>Last Updated: December 31, 2025 ⏰</p>
-        <p>Support us: <a href="https://kaspa.stream/addresses/kaspa:qrnz80ymmqnt7zw6nzfzym3env2s9sccfmtav9gy3sq06w6ce85m72fx3gna0" target="_blank" rel="noopener noreferrer">Donate or Tip KAS to tipme.kas</a></p>
+        <p>&copy; 2025 Kaspa Surf. Curated links for the Kaspa ecosystem. Not affiliated with Kaspa.org. Last Updated: December 31, 2025 ⏰</p>
+        <p>This site is made for the Kaspa Community if you found useful please consider supporting <a href="https://tipme.kas/" target="_blank" rel="noopener noreferrer">Donate or Tip KAS to tipme.kas</a></p>
+        <p>While every effort has been made to ensure the accuracy of these links, we are not responsible for the content of external sites or any changes to them.</p>
     </footer>
     
     <script>
