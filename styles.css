@@ -344,10 +344,10 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
 }
 
 #kas-price {
-    position: fixed;     /* Changed to fixed: Stays at viewport top-left, even on scroll */
+    position: absolute;     /* Changed to fixed: Stays at viewport top-left, even on scroll */
     top: 0;
     left: 0;
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.8);  /* Keeps it readable */
+    background-color: var(--bg-secondary);  /* Adapts to light/dark mode */
     z-index: 10;         /* Ensures it's above other content if needed */
 }
