@@ -58,6 +58,22 @@
         <h1>Kaspa Surf 🌊</h1>
         <p class="subtitle">Ride the BlockDAG wave: Curated Kaspa links</p>
         <button id="mode-toggle" aria-label="Toggle light/dark mode">🌙</button>
+        <div id="kas-price">Loading KAS price…</div>
+<script>
+async function loadKaspaPrice() {
+  const r = await fetch("https://api.kaspa.surf/v1/ticker/kaspa");
+  const d = await r.json();
+
+  document.getElementById("kas-price").innerHTML =
+    `<strong>KAS:</strong> $${d.price_usd.toFixed(4)} 
+     <span style="color:${d.change_24h >= 0 ? 'lime' : 'red'}">
+     (${d.change_24h.toFixed(2)}%)
+     </span>`;
+}
+
+loadKaspaPrice();
+setInterval(loadKaspaPrice, 60000);
+</script>
     </header>
     
     <main>
