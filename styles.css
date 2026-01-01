@@ -20,7 +20,7 @@ body {
     font-family: 'Roboto', sans-serif;
     background: var(--gradient);
     color: var(--text-color);
-    margin: 0;           /* Optional: Removes default body margin to hug the true top-left */
+    /*margin: 0;           /* Optional: Removes default body margin to hug the true top-left */
     padding: 0;
     line-height: 1.6;
     transition: background 0.3s, color 0.3s;
@@ -346,10 +346,10 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
 }
 
 #kas-price {
-    position: absolute;  /* Takes it out of flow and positions it absolutely */
-    top: 0;              /* Pins to the top */
-    left: 0;             /* Pins to the left */
-    padding: 10px;       /* Optional: Adds some space from the edge for readability */
-    background-color: rgba(255, 255, 255, 0.8);  /* Optional: Semi-transparent background to make text visible over content */
-    z-index: 10;         /* Ensures it's on top of other elements if needed */
+    position: fixed;     /* Changed to fixed: Stays at viewport top-left, even on scroll */
+    top: 0;
+    left: 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8);  /* Keeps it readable */
+    z-index: 10;         /* Ensures it's above other content if needed */
 }
