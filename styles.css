@@ -344,10 +344,26 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
 }
 
 #kas-price {
-    position: absolute;     /* Changed to fixed: Stays at viewport top-left, even on scroll */
+    position: absolute;  /* Keeps it pinned to viewport top-left */
     top: 0;
     left: 0;
-    padding: 10px;
-    background-color: var(--bg-secondary);  /* Adapts to light/dark mode */
-    z-index: 10;         /* Ensures it's above other content if needed */
+    padding: 8px 12px;  /* Slightly reduced for compactness; adjust as needed */
+    background-color: transparent;  /* Matches theme bg; use rgba(var(--bg-color-rgb), 0.2) for subtle overlay if text needs more contrast */
+    color: var(--text-color);  /* Ensures text matches light/dark */
+    font-size: 1em;  /* Base size */
+    z-index: 10;  /* Above other elements */
+    white-space: nowrap;  /* Prevents internal wrapping */
+    overflow: hidden;  /* Hides any overflow on very small screens */
+    text-overflow: ellipsis;  /* Adds ... if too long */
+}
+
+/* For mobile/small screens to reduce size and minimize overlap */
+@media (max-width: 768px) {
+    #kas-price {
+        font-size: 0.85em;  /* Smaller text to fit better */
+        padding: 6px 8px;  /* Tighter padding */
+    }
+    body {
+        padding-top: 25px;  /* Optional: Pushes header/title down to avoid overlap; test and adjust height */
+    }
 }
