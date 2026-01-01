@@ -94,9 +94,9 @@ async function loadKaspaPrice() {
 
 el.innerHTML = `
   <div style="display:flex; flex-direction:row; align-items:center; gap:8px; white-space:nowrap;">
-    <div><strong>KAS:</strong> $${fmtUsd(price, 5)} ${changeHtml}</div>
+    <div><strong>KAS Price:</strong> $${fmtUsd(price, 5)} ${changeHtml}</div>
     <div style="opacity:.85; font-size:.95em;">
-    &nbsp;•&nbsp; 24h Volume: ${fmtNum(vol24)} &nbsp;•&nbsp; Updated: ${new Date(d.timestamp).toLocaleTimeString()}
+    •&nbsp; 24h Volume: ${fmtNum(vol24)} &nbsp;•&nbsp; Updated: ${new Date(d.timestamp).toLocaleTimeString()}
     </div>
   </div>
 `;
