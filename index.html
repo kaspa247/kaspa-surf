@@ -57,23 +57,60 @@
     <header>
         <h1>Kaspa Surf 🌊</h1>
         <p class="subtitle">Ride the BlockDAG wave: Curated Kaspa links</p>
-        <button id="mode-toggle" aria-label="Toggle light/dark mode">🌙</button>
         <div id="kas-price">Loading KAS price…</div>
-<script>
-async function loadKaspaPrice() {
-  const r = await fetch("https://api.kaspa.surf/v1/ticker/kaspa");
-  const d = await r.json();
 
-  document.getElementById("kas-price").innerHTML =
-    `<strong>KAS:</strong> $${d.price_usd.toFixed(4)} 
-     <span style="color:${d.change_24h >= 0 ? 'lime' : 'red'}">
-     (${d.change_24h.toFixed(2)}%)
-     </span>`;
+<script>
+const API = "https://api.kaspa.surf";
+
+function fmtUsd(n, decimals = 5) {
+  return Number(n).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+function fmtNum(n) {
+  return Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
+}
+
+async function loadKaspaPrice() {
+  const el = document.getElementById("kas-price");
+
+  try {
+    const r = await fetch(`${API}/v1/ticker/kaspa`, { cache: "no-store" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const d = await r.json();
+
+    const price = d?.aggregate?.vwap ?? d?.aggregate?.avg_price;
+    const vol24 = d?.aggregate?.total_volume_24h ?? 0;
+
+    // pick an exchange with a valid last + change_pct (for a "24h change" display)
+    const best = (d.exchanges || [])
+      .filter(x => x && x.last != null && x.change_pct != null)
+      .sort((a, b) => (b.volume_24h ?? 0) - (a.volume_24h ?? 0))[0];
+
+    const changePct = best?.change_pct;
+    const changeHtml = (changePct == null)
+      ? ""
+      : ` <span style="color:${changePct >= 0 ? "lime" : "red"}">(${changePct.toFixed(2)}%)</span>
+          <small style="opacity:.8">via ${best.exchange}</small>`;
+
+    el.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div><strong>KAS:</strong> $${fmtUsd(price, 5)} ${changeHtml}</div>
+        <div style="opacity:.85;font-size:.95em">
+          24h Volume: ${fmtNum(vol24)} &nbsp;•&nbsp; Updated: ${new Date(d.timestamp).toLocaleTimeString()}
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    console.error(e);
+    el.textContent = "Failed to load KAS price";
+  }
 }
 
 loadKaspaPrice();
 setInterval(loadKaspaPrice, 60000);
 </script>
+
+        <button id="mode-toggle" aria-label="Toggle light/dark mode">🌙</button>
     </header>
     
     <main>
