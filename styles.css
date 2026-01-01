@@ -27,8 +27,6 @@ body {
     position: relative;  /* Ensures absolute positioning is relative to the body/viewport */
 }
 
-}
-
 header {
     text-align: center;
     padding: 2rem 1rem;
