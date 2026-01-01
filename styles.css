@@ -20,10 +20,13 @@ body {
     font-family: 'Roboto', sans-serif;
     background: var(--gradient);
     color: var(--text-color);
-    margin: 0;
+    margin: 0;           /* Optional: Removes default body margin to hug the true top-left */
     padding: 0;
     line-height: 1.6;
     transition: background 0.3s, color 0.3s;
+    position: relative;  /* Ensures absolute positioning is relative to the body/viewport */
+}
+
 }
 
 header {
@@ -340,4 +343,13 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
 
 @media (max-width: 768px) {
   .form-grid { grid-template-columns: 1fr; }
+}
+
+#kas-price {
+    position: absolute;  /* Takes it out of flow and positions it absolutely */
+    top: 0;              /* Pins to the top */
+    left: 0;             /* Pins to the left */
+    padding: 10px;       /* Optional: Adds some space from the edge for readability */
+    background-color: rgba(255, 255, 255, 0.8);  /* Optional: Semi-transparent background to make text visible over content */
+    z-index: 10;         /* Ensures it's on top of other elements if needed */
 }
