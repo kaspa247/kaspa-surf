@@ -265,8 +265,8 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
 }#kas-price:hover {
     box-shadow: 0 0 12px rgba(var(--accent-color), 0.5);  /* Enhanced glow on hover */
 }#kaspa-surf-icon {
-    width: 132px;   /* Exact width */
-    height: 132px;  /* Exact height */
+    width: 96px;   /* Exact width */
+    height: 96px;  /* Exact height */
     object-fit: contain;  /* Keeps aspect ratio without distortion */
     filter: drop-shadow(0 0 5px var(--accent-color));  /* Hi-tech glow */
 }.health-indicator {
