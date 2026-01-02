@@ -57,11 +57,11 @@
         <header>
     <div class="header-left">
         <img src="https://kaspa.surf/img/Kaspa-Icon-Dark-Green-on-Black.png" alt="Kaspa Icon" id="kaspa-icon">
-        <h1>Kaspa Surf 🌊</h1>
+        <h1>Kaspa Surf</h1><h2>🌊</h2>
         <p>
-            <li><a href="https://kaspa.surf/exchange-prices">Exchange Prices</a>- Beta</li>
-            <li><a href="https://kaspa.surf/token-explorer">Token Explorer</a><span class="badge hot">- Soon! 🔥</span></li>
-            <li><a href="https://kaspa.surf/nft-explorer">NFT Explorer</a><span class="badge hot">- Soon! 🔥</span></li>
+            <a href="https://kaspa.surf/exchange-prices">Exchange Prices</a><span class="badge hot">Beta🔥</span>|
+            <a href="https://kaspa.surf/token-explorer">Token Explorer</a><span class="badge hot">Soon!</span>|
+            <a href="https://kaspa.surf/nft-explorer">NFT Explorer</a><span class="badge hot">- Soon!</span>
         </p>
     </div>
     <div class="header-right">
@@ -108,7 +108,7 @@ async function loadKaspaPrice() {
     `;
   } catch (e) {
     console.error(e);
-    el.innerHTML = 'Failed to load KAS price <span style="color:red;">• Unhealthy ❌</span>';
+    el.innerHTML = 'Failed to load <span style="color:red;">• Unhealthy ❌</span>';
   }
 }
 
