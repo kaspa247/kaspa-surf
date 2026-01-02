@@ -236,6 +236,13 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
     display: flex;
     align-items: center;
     gap: 1rem;  /* Space between elements */
+}.header-right {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;  /* Space between links, price, toggle */
 }.top-links {
     display: flex;
     align-items: center;
@@ -261,7 +268,7 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
 }#mode-toggle:hover {
     transform: scale(1.2);
 }#kas-price {
-    position: static;  /* Flows in header-left */
+    position: static;  /* Flows in header-right */
     padding: 0;
     background-color: transparent;
     color: var(--text-color);
@@ -269,12 +276,6 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}.header-right {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    display: flex;
-    align-items: center;
 }#kaspa-icon {
     height: 1.5rem;  /* Size to match button */
     width: auto;
@@ -297,10 +298,10 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
     #kas-price {
         font-size: 0.85em;
     }
-    .header-left {
+    .header-right {
         gap: 0.5rem;
         top: 0.5rem;
-        left: 0.5rem;
+        right: 0.5rem;
     }
     .top-links {
         font-size: 0.9rem;
