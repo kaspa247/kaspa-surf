@@ -1,10 +1,12 @@
-:root {
-    --bg-color: #0a0f1a; /* Dark blue for surf night vibe /
-    --text-color: #e0e0e0;
-    --accent-color: #00b4d8; / Teal wave */
-    --link-color: #00d4ff;
-    --bg-secondary: #1c2333;
-    --gradient: linear-gradient(135deg, #0a0f1a, #1c2333);
+:root{
+  --bg-color:#0a0f1a;
+  --text-color:#cfe7ff;      /* main readable night text (cool) */
+  --muted-text:#9fb6cc;      /* secondary/description text */
+  --accent-color:#00b4d8;
+  --link-color:#66e3ff;      /* softer link cyan */
+  --bg-secondary:#1c2333;
+  --gradient:linear-gradient(135deg,#0a0f1a,#1c2333);
+}
 }body:not(.dark) {
     --bg-color: #f0f8ff;
     --text-color: #121212;
@@ -23,10 +25,10 @@
     position: relative;  / Ensures absolute positioning is relative to the body/viewport */
 }header {
     display: flex;
-    justify-content: space-between;  /* Pushes left to far left, right to far right /
+    justify-content: space-between;  /* Pushes left to far left, right to far right */
     align-items: center;
     padding: 1rem 2rem;
-    background: rgba(0, 0, 0, 0.2);  / Subtle overlay /
+    background: rgba(0, 0, 0, 0.2);  /* Subtle overlay */
     position: relative;
     border-bottom: 1px solid rgba(var(--accent-color), 0.3);  / Faint divider */
 }.header-left {
@@ -117,12 +119,12 @@
     color: #00d4ff;
     box-shadow: 0 0 5px rgba(0, 180, 216, 0.5);
 }.hot {
-    background: rgba(255, 100, 0, 0.3); /* Warm orange for fire, contrasts teal /
+    background: rgba(255, 100, 0, 0.3); /* Warm orange for fire, contrasts teal */
     color: #ff4500;
     box-shadow: 0 0 5px rgba(255, 100, 0, 0.5);
     animation: pulse 2s infinite alternate; / Gentle throb */
 }.rec {
-    background: rgba(255, 215, 0, 0.3); /* Gold for stars /
+    background: rgba(255, 215, 0, 0.3); /* Gold for stars */
     color: #ffd700;
     box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
     animation: none; / Static for recommended */
@@ -150,10 +152,10 @@
     li { padding: 0.75rem; }
     #featured-section { grid-template-columns: 1fr; }
     #categories { grid-template-columns: 1fr; }
-}/* Subtitle fade animation /
+}/* Subtitle fade animation */
 .subtitle {
-    transition: opacity 0.5s ease; / Smooth fade */
-}/* Prettier footer styles /
+    transition: opacity 0.5s ease; /* Smooth fade */
+}/* Prettier footer styles */
 footer {
     text-align: center;
     padding: 2rem 1rem; / More padding for breathing room /
@@ -250,47 +252,47 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
  (max-width: 768px) {
   .form-grid { grid-template-columns: 1fr; }
 }#kas-price {
-    background-color: transparent;  /* Matches theme bg; use rgba(var(--bg-color-rgb), 0.2) for subtle overlay if text needs more contrast /
-    color: var(--text-color);  / Ensures text matches light/dark /
-    font-size: 1em;  / Base size /
-    white-space: nowrap;  / Prevents internal wrapping /
-    overflow: hidden;  / Hides any overflow on very small screens /
-    text-overflow: ellipsis;  / Adds ... if too long /
-    padding: 8px 12px;  / Slightly reduced for compactness; adjust as needed /
-    box-shadow: 0 0 8px rgba(var(--accent-color), 0.3);  / Cool hi-tech shadow /
-    border-radius: 20px;  / Professional rounded edges */
+    background-color: transparent;  /* Matches theme bg; use rgba(var(--bg-color-rgb), 0.2) for subtle overlay if text needs more contrast */
+    color: var(--text-color);  /* Ensures text matches light dark */
+    font-size: 1em;  /* Base size */
+    white-space: nowrap;  /* Prevents internal wrapping */
+    overflow: hidden;  /* Hides any overflow on very small screens */
+    text-overflow: ellipsis;  /* Adds ... if too long */
+    padding: 8px 12px;  /* Slightly reduced for compactness; adjust as needed */
+    box-shadow: 0 0 8px rgba(var(--accent-color), 0.3);  /* Cool hi-tech shadow */
+    border-radius: 20px;  /* Professional rounded edges */
     transition: box-shadow 0.3s;
 }#kas-price:hover {
     box-shadow: 0 0 12px rgba(var(--accent-color), 0.5);  /* Enhanced glow on hover */
 }#kaspa-icon {
-    width: 64px;   /* Exact width /
-    height: 64px;  / Exact height /
-    object-fit: contain;  / Keeps aspect ratio without distortion /
-    filter: drop-shadow(0 0 5px var(--accent-color));  / Hi-tech glow */
+    width: 64px;   /* Exact width */
+    height: 64px;  /* Exact height */
+    object-fit: contain;  /* Keeps aspect ratio without distortion */
+    filter: drop-shadow(0 0 5px var(--accent-color));  /* Hi-tech glow */
 }.health-indicator {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 0.2rem 0.6rem;
-    border: 1px solid lime;  /* Professional border /
-    border-radius: 50%;  / Circle for checkmark /
+    border: 1px solid lime;  /* Professional border */
+    border-radius: 50%;  /* Circle for checkmark */
     font-size: 0.85em;
     color: lime;
-    background: rgba(0, 255, 0, 0.1);  / Subtle green tint /
-    box-shadow: 0 0 5px lime;  / Hi-tech glow */
+    background: rgba(0, 255, 0, 0.1);  /* Subtle green tint */
+    box-shadow: 0 0 5px lime;  /* Hi-tech glow */
     gap: 0.2rem;
-}/* For mobile/small screens to reduce size and minimize overlap /
+}/* For mobile/small screens to reduce size and minimize overlap */
 @media
  (max-width: 768px) {
     #kas-price {
-        font-size: 0.85em;  / Smaller text to fit better /
-        padding: 6px 8px;  / Tighter padding /
+        font-size: 0.85em;  /* Smaller text to fit better */
+        padding: 6px 8px;  /* Tighter padding */
     }
     body {
-        padding-top: 25px;  / Optional: Pushes header/title down to avoid overlap; test and adjust height /
+        padding-top: 25px;  /* Optional: Pushes header title down to avoid overlap; test and adjust height */
     }
     #kaspa-icon {
-        width: 48px;  / Slightly smaller for mobile */
+        width: 48px;  /* Slightly smaller for mobile */
         height: 48px;
     }
 }
