@@ -55,19 +55,21 @@
 </head>
 <body class="dark">
     <header>
+        <div class="header-left">
+            <button id="mode-toggle" aria-label="Toggle light/dark mode">🌙</button>
+            <div id="kas-price">Loading KAS price…</div>
+        </div>
         <h1>Kaspa Surf 🌊</h1>
         <p class="subtitle">Ride the BlockDAG wave: Curated Kaspa links</p>
-        <div id="kas-price">Loading KAS price…</div>
+        <div class="header-right">
+            <img src="https://kaspa.org/wp-content/uploads/2022/11/kaspa_logo_white.png" alt="Kaspa Icon" id="kaspa-icon">
+        </div>
 
 <script>
 const API = "https://api.kaspa.surf";
 
 function fmtUsd(n, decimals = 5) {
   return Number(n).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-}
-
-function fmtNum(n) {
-  return Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
 }
 
 async function loadKaspaPrice() {
@@ -79,7 +81,6 @@ async function loadKaspaPrice() {
     const d = await r.json();
 
     const price = d?.aggregate?.vwap ?? d?.aggregate?.avg_price;
-    const vol24 = d?.aggregate?.total_volume_24h ?? 0;
 
     // pick an exchange with a valid last + change_pct (for a "24h change" display)
     const best = (d.exchanges || [])
@@ -89,30 +90,29 @@ async function loadKaspaPrice() {
     const changePct = best?.change_pct;
     const changeHtml = (changePct == null)
       ? ""
-      : ` <span style="color:${changePct >= 0 ? "lime" : "red"}">(${changePct.toFixed(2)}%)</span>
+      : ` <span style="color:${changePct >= 0 ? "lime" : "red"}">(${changePct >= 0 ? '+' : '-'} ${Math.abs(changePct).toFixed(2)}%)</span>
           <small style="opacity:.8">via ${best.exchange}</small>`;
 
-el.innerHTML = `
-  <div style="display:flex; flex-direction:row; align-items:center; gap:8px; white-space:nowrap;">
-    <div><strong>Live KAS Price:</strong> $${fmtUsd(price, 5)} ${changeHtml}</div>
-    <div style="opacity:.85; font-size:.95em;">
-    •&nbsp; 24h Volume: ${fmtNum(vol24)}
-    </div>
-  </div>
-`;
+    const healthHtml = `<div style="opacity:.85; font-size:.95em; color:lime;">
+      • Healthy ✔
+    </div>`;
+
+    el.innerHTML = `
+      <div style="display:flex; flex-direction:row; align-items:center; gap:8px; white-space:nowrap;">
+        <div><strong>$${fmtUsd(price, 5)} ${changeHtml}</strong></div>
+        ${healthHtml}
+      </div>
+    `;
   } catch (e) {
     console.error(e);
-    el.textContent = "Failed to load KAS price";
+    el.innerHTML = 'Failed to load KAS price <span style="color:red;">• Unhealthy ❌</span>';
   }
 }
 
 loadKaspaPrice();
 setInterval(loadKaspaPrice, 60000);
 </script>
-
-        <button id="mode-toggle" aria-label="Toggle light/dark mode">🌙</button>
     </header>
-    
     <main>
         <section id="featured-section">
             <div class="featured-col">
