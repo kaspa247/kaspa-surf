@@ -32,7 +32,7 @@ header {
     justify-content: space-between;  /* Pushes left to far left, right to far right */
     align-items: center;
     padding: 1rem 2rem;
-    background: rgba(0, 0, 0, 0.2);  /* Your subtle overlay */
+    background: rgba(0, 0, 0, 0.2);  /* Subtle overlay */
     position: relative;
     border-bottom: 1px solid rgba(var(--accent-color), 0.3);  /* Faint divider */
 }
@@ -63,18 +63,17 @@ h1 {
 }
 
 #mode-toggle {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
     background: none;
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: transform 0.3s, color 0.3s;
+    color: var(--text-color);
 }
 
 #mode-toggle:hover {
     transform: scale(1.2);
+    color: var(--accent-color);  /* Cool hover effect */
 }
 
 main {
@@ -359,49 +358,27 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
 }
 
 #kas-price {
-    position: absolute;  /* Keeps it pinned to viewport top-left */
-    top: 0;
-    left: 0;
-    padding: 8px 12px;  /* Slightly reduced for compactness; adjust as needed */
     background-color: transparent;  /* Matches theme bg; use rgba(var(--bg-color-rgb), 0.2) for subtle overlay if text needs more contrast */
     color: var(--text-color);  /* Ensures text matches light/dark */
     font-size: 1em;  /* Base size */
-    z-index: 10;  /* Above other elements */
     white-space: nowrap;  /* Prevents internal wrapping */
     overflow: hidden;  /* Hides any overflow on very small screens */
     text-overflow: ellipsis;  /* Adds ... if too long */
-}
-
-/* For mobile/small screens to reduce size and minimize overlap */
-@media (max-width: 768px) {
-    #kas-price {
-        font-size: 0.85em;  /* Smaller text to fit better */
-        padding: 6px 8px;  /* Tighter padding */
-    }
-    body {
-        padding-top: 25px;  /* Optional: Pushes header/title down to avoid overlap; test and adjust height */
-    }
-}
-#kaspa-icon {
-    width: 64px;   /* Exact width */
-    height: 64px;  /* Exact height */
-    object-fit: contain;  /* Keeps aspect ratio without distortion */
-    filter: drop-shadow(0 0 5px var(--accent-color));  /* Hi-tech glow */
-}
-
-#kas-price {
-    background: transparent;  /* Blends for clean look */
-    color: var(--text-color);  /* High contrast for readability */
-    font-size: 1rem;
-    white-space: nowrap;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;  /* Professional rounded edges */
+    padding: 8px 12px;  /* Slightly reduced for compactness; adjust as needed */
     box-shadow: 0 0 8px rgba(var(--accent-color), 0.3);  /* Cool hi-tech shadow */
+    border-radius: 20px;  /* Professional rounded edges */
     transition: box-shadow 0.3s;
 }
 
 #kas-price:hover {
     box-shadow: 0 0 12px rgba(var(--accent-color), 0.5);  /* Enhanced glow on hover */
+}
+
+#kaspa-icon {
+    width: 64px;   /* Exact width */
+    height: 64px;  /* Exact height */
+    object-fit: contain;  /* Keeps aspect ratio without distortion */
+    filter: drop-shadow(0 0 5px var(--accent-color));  /* Hi-tech glow */
 }
 
 .health-indicator {
@@ -418,36 +395,17 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
     gap: 0.2rem;
 }
 
-#mode-toggle {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: transform 0.3s, color 0.3s;
-    color: var(--text-color);
-}
-
-#mode-toggle:hover {
-    transform: scale(1.2);
-    color: var(--accent-color);  /* Cool hover effect */
-}
-
-/* Mobile adjustments (keeps far left/right but stacks if needed) */
+/* For mobile/small screens to reduce size and minimize overlap */
 @media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: flex-start;  /* Aligns to left for mobile */
-        padding: 1rem;
+    #kas-price {
+        font-size: 0.85em;  /* Smaller text to fit better */
+        padding: 6px 8px;  /* Tighter padding */
     }
-    .header-right {
-        align-self: flex-end;  /* Keeps right-aligned on mobile */
+    body {
+        padding-top: 25px;  /* Optional: Pushes header/title down to avoid overlap; test and adjust height */
     }
     #kaspa-icon {
         width: 48px;  /* Slightly smaller for mobile */
         height: 48px;
-    }
-    #kas-price {
-        font-size: 0.9rem;
-        padding: 0.2rem 0.6rem;
     }
 }
