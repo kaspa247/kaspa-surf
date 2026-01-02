@@ -54,12 +54,63 @@
     </script>
 </head>
 <body class="dark">
-    <header>
-        <h1>Kaspa Surf 🌊</h1>
-        <p class="subtitle">Ride the BlockDAG wave: Curated Kaspa links</p>
+        <header>
+    <div class="header-left">
+        <img src="https://kaspa.surf/img/kaspa-surf-logo.png" alt="Kaspa Surf Icon" id="kaspa-surf-icon"><h1>Kaspa Surf</h1>
+    </div>
+    <div class="header-right">
+        <p><a href="https://kaspa.surf/exchange-prices">Exchange Prices</a><span class="badge hot">Beta🔥</span></p>
+        <div id="kas-price">Loading KAS price…</div>
         <button id="mode-toggle" aria-label="Toggle light/dark mode">🌙</button>
+    </div>
+<script>
+const API = "https://api.kaspa.surf";
+
+function fmtUsd(n, decimals = 5) {
+  return Number(n).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+async function loadKaspaPrice() {
+  const el = document.getElementById("kas-price");
+
+  try {
+    const r = await fetch(`${API}/v1/ticker/kaspa`, { cache: "no-store" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const d = await r.json();
+
+    const price = d?.aggregate?.vwap ?? d?.aggregate?.avg_price;
+
+    // pick an exchange with a valid last + change_pct (for a "24h change" display)
+    const best = (d.exchanges || [])
+      .filter(x => x && x.last != null && x.change_pct != null)
+      .sort((a, b) => (b.volume_24h ?? 0) - (a.volume_24h ?? 0))[0];
+
+    const changePct = best?.change_pct;
+    const changeHtml = (changePct == null)
+      ? ""
+      : ` <span style="color:${changePct >= 0 ? "lime" : "red"}">(${changePct >= 0 ? '+' : '-'} ${Math.abs(changePct).toFixed(2)}%)</span>
+          <small style="opacity:.8">via ${best.exchange}</small>`;
+
+    const healthHtml = `<div style="opacity:.85; font-size:.95em; color:lime;">
+      • Healthy ✔
+    </div>`;
+
+    el.innerHTML = `
+      <div style="display:flex; flex-direction:row; align-items:center; gap:8px; white-space:nowrap;">
+        <div><strong>$${fmtUsd(price, 5)} ${changeHtml}</strong></div>
+        ${healthHtml}
+      </div>
+    `;
+  } catch (e) {
+    console.error(e);
+    el.innerHTML = 'Failed to load <span style="color:red;">• Unhealthy ❌</span>';
+  }
+}
+
+loadKaspaPrice();
+setInterval(loadKaspaPrice, 60000);
+</script>
     </header>
-    
     <main>
 <section class="category" id="link-request">
   <h2>Request a Link Add / Update</h2>
