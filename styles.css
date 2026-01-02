@@ -264,7 +264,7 @@ body:not(.dark) input::placeholder, body:not(.dark) textarea::placeholder { colo
     transition: box-shadow 0.3s;
 }#kas-price:hover {
     box-shadow: 0 0 12px rgba(var(--accent-color), 0.5);  /* Enhanced glow on hover */
-}#kaspa-icon {
+}#kaspa-surf-icon {
     width: 64px;   /* Exact width */
     height: 64px;  /* Exact height */
     object-fit: contain;  /* Keeps aspect ratio without distortion */
