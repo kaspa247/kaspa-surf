@@ -15,6 +15,7 @@
     header{padding:16px 18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
     h1{margin:0;font-size:18px;letter-spacing:.2px}
     a{color:var(--link);text-decoration:none}
+    a:hover{text-decoration:underline}
     main{padding:0 18px 22px;max-width:1400px;margin:0 auto;}
     .card{background:rgba(18,26,42,.82);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);margin-top:12px;}
     .card h2{margin:0 0 10px;font-size:13px;color:var(--muted);font-weight:650;display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -22,6 +23,7 @@
     .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
     .bad{color:var(--bad)} .ok{color:var(--ok)}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
     .grid{
       display:grid; gap:12px;
       grid-template-columns:repeat(12, minmax(0, 1fr));
@@ -43,17 +45,27 @@
     .kv .k{font-size:11px;color:var(--muted)}
     .kv .v{font-size:16px;margin-top:4px;font-weight:800}
     .kv .s{font-size:12px;margin-top:4px;color:var(--muted)}
+
     table{width:100%;border-collapse:collapse;font-size:12px}
     th,td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:top}
     th{color:var(--muted);font-weight:650;text-align:left}
-    .pill{font-size:11px;padding:3px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05)}
+
     .btn{
       background:rgba(255,255,255,.05);color:var(--text);border:1px solid rgba(0,180,216,.35);
       padding:8px 10px;border-radius:12px;cursor:pointer;
     }
     .btn:hover{background:rgba(0,180,216,.10)}
-    .right{margin-left:auto}
     .nowrap{white-space:nowrap}
+
+    /* tiny toggle */
+    .toggle{
+      display:inline-flex;gap:8px;align-items:center;
+      padding:6px 10px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+      user-select:none;
+    }
+    .toggle input{accent-color: var(--accent);}
   </style>
 </head>
 
@@ -63,18 +75,25 @@
     <h1>Kaspa Surf — Dashboard</h1>
     <span class="status">· <a href="address.html">Address Explorer</a></span>
   </div>
+
   <div class="row">
     <span class="status">REST: <a id="apiLink" href="#" target="_blank" rel="noreferrer">rest-api.kaspa.surf</a></span>
-    <span class="status">Docs: <a id="docsLink" href="#" target="_blank" rel="noreferrer">/docs</a></span>
+    <span class="status">INDEXER: <a id="indexerLink" href="#" target="_blank" rel="noreferrer">indexer.kaspa.surf</a></span>
     <span class="status">·</span>
     <span class="status">Last refresh: <span id="last" class="mono">—</span></span>
+
+    <label class="toggle status" title="Auto refresh">
+      <input type="checkbox" id="auto" checked />
+      Auto
+    </label>
+
     <button class="btn" id="refreshBtn">Refresh</button>
   </div>
 </header>
 
 <main>
   <div class="grid">
-    <!-- Price / Market -->
+    <!-- Market / Price -->
     <section class="card span-4">
       <h2>
         Market
@@ -94,7 +113,7 @@
       <div class="status" id="netErr"></div>
     </section>
 
-    <!-- Latest Blocks -->
+    <!-- Blocks -->
     <section class="card span-6">
       <h2>
         Latest Blocks
@@ -116,7 +135,7 @@
       <div class="status" id="blocksErr"></div>
     </section>
 
-    <!-- Latest Transactions -->
+    <!-- Txs -->
     <section class="card span-6">
       <h2>
         Latest Transactions
@@ -142,19 +161,22 @@
 
 <script>
   // ====== CONFIG ======
-  // Your existing REST server (addresses/balance/utxos etc.)
-  const API_BASE = "https://rest-api.kaspa.surf";
-  // Optional: if you also have a public ticker endpoint (you used api.kaspa.surf in your logs)
-  const TICKER_BASE = "https://api.kaspa.surf";
+  const REST_BASE   = "https://rest-api.kaspa.surf";
+  const INDEXER_BASE = "https://indexer.kaspa.surf";
+  const TICKER_BASE  = "https://api.kaspa.surf";
 
-  const DOCS_URL = API_BASE + "/docs";
-  const REFRESH_MS = 5000; // feels "kaspa.stream-ish"
+  // Make refresh feel smooth (no hard "blink")
+  const REFRESH_MS = 15000;
+  // Linkouts (optional)
+  const STREAM_BLOCK = (hash) => `https://kaspa.stream/block/${encodeURIComponent(hash)}`;
+  const STREAM_TX    = (txid) => `https://kaspa.stream/tx/${encodeURIComponent(txid)}`;
+
+  // ====== DOM ======
+  const $ = (id) => document.getElementById(id);
+  $("apiLink").href = REST_BASE; $("apiLink").textContent = REST_BASE.replace("https://","");
+  $("indexerLink").href = INDEXER_BASE; $("indexerLink").textContent = INDEXER_BASE.replace("https://","");
 
   // ====== HELPERS ======
-  const $ = (id) => document.getElementById(id);
-  $("apiLink").href = API_BASE; $("apiLink").textContent = API_BASE.replace("https://","");
-  $("docsLink").href = DOCS_URL;
-
   const fmtNum = (n, maxFrac=8) => {
     if (n === null || n === undefined || n === "") return "—";
     const x = Number(n);
@@ -168,7 +190,7 @@
   };
   const shortHash = (s, n=18) => (s ? (String(s).slice(0,n) + "…") : "—");
 
-  async function fetchWithTimeout(url, opts={}, timeoutMs=5000){
+  async function fetchWithTimeout(url, opts={}, timeoutMs=8000){
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), timeoutMs);
     try{
@@ -179,12 +201,22 @@
     }
   }
 
-  async function apiGetJson(base, path){
-    const res = await fetchWithTimeout(base + path, { headers: { "accept":"application/json" }}, 7000);
+  async function getJson(base, path){
+    const res = await fetchWithTimeout(base + path, { headers: { "accept":"application/json" }});
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     const ct = res.headers.get("content-type") || "";
     if (!ct.includes("application/json")) return await res.text();
     return await res.json();
+  }
+
+  async function firstWorkingJson(base, paths){
+    for (const p of paths){
+      try{
+        const data = await getJson(base, p);
+        return { path: p, data };
+      } catch(e){ /* keep trying */ }
+    }
+    return null;
   }
 
   function kvGrid(el, items){
@@ -197,27 +229,23 @@
     `).join("");
   }
 
-  async function firstWorkingJson(base, paths){
-    for (const p of paths){
-      try{
-        const data = await apiGetJson(base, p);
-        return { path: p, data };
-      } catch(e){ /* keep trying */ }
-    }
-    return null;
+  function setLoading(section){
+    if (section === "blocks") $("blocksBody").innerHTML = `<tr><td colspan="4" class="status">Loading…</td></tr>`;
+    if (section === "txs") $("txBody").innerHTML = `<tr><td colspan="4" class="status">Loading…</td></tr>`;
   }
 
-  // ====== LOADERS ======
-
+  // ====== MARKET ======
   async function loadMarket(){
     $("marketErr").textContent = "";
     $("marketMeta").textContent = "—";
     kvGrid($("marketKvs"), [
-      {k:"Price", v:"—"}, {k:"24h Change", v:"—"},
-      {k:"24h High", v:"—"}, {k:"24h Low", v:"—"},
+      {k:"Price (USD)", v:"—"},
+      {k:"24h Change", v:"—"},
+      {k:"24h High", v:"—"},
+      {k:"24h Low", v:"—"},
+      {k:"24h Volume", v:"—"},
     ]);
 
-    // Try a couple common ticker shapes
     const found = await firstWorkingJson(TICKER_BASE, [
       `/v1/ticker/kaspa`,
       `/v1/ticker/KAS`,
@@ -225,19 +253,22 @@
     ]);
 
     if (!found){
-      $("marketErr").innerHTML = `<span class="bad">No ticker endpoint found.</span> If you want, we can point this at CoinGecko later.`;
+      $("marketErr").innerHTML = `<span class="bad">No ticker endpoint found.</span>`;
       return;
     }
 
     const { path, data } = found;
 
-    // Normalize likely shapes:
-    // - {token:"kaspa", exchanges:[{last,high,low,change_pct,volume_24h}...], range:"today"}
-    // - {price, high_24h, low_24h, change_24h, ...}
     let last=null, high=null, low=null, change=null, vol=null, src="";
 
     if (data?.exchanges && Array.isArray(data.exchanges)){
-      const best = data.exchanges.find(x => x?.last != null) || data.exchanges[0];
+      // choose exchange that has more fields (change/volume) if possible
+      const best =
+        data.exchanges.find(x => x?.last != null && x?.change_pct != null) ||
+        data.exchanges.find(x => x?.last != null && x?.volume_24h != null) ||
+        data.exchanges.find(x => x?.last != null) ||
+        data.exchanges[0];
+
       last = best?.last;
       high = best?.high;
       low  = best?.low;
@@ -266,9 +297,11 @@
     $("marketMeta").textContent = `Endpoint: ${path}`;
   }
 
+  // ====== NETWORK ======
   async function loadNetwork(){
     $("netErr").textContent = "";
     $("netMeta").textContent = "—";
+
     kvGrid($("netKvs"), [
       {k:"Network", v:"—"},
       {k:"Block rate", v:"—"},
@@ -278,45 +311,70 @@
       {k:"Node sync", v:"—"},
     ]);
 
-    // Standard Kaspa REST server exposes /info/network and often other /info/* endpoints. :contentReference[oaicite:2]{index=2}
-    const netFound = await firstWorkingJson(API_BASE, [
+    const netFound = await firstWorkingJson(REST_BASE, [
       `/info/network`,
       `/info`,
       `/network`,
     ]);
 
-    const blueFound = await firstWorkingJson(API_BASE, [
+    const scoreFound = await firstWorkingJson(REST_BASE, [
       `/info/virtual-chain-blue-score`,
       `/info/virtual-chain-daa-score`,
     ]);
 
-    if (!netFound && !blueFound){
-      $("netErr").innerHTML = `<span class="bad">No network info endpoints found.</span> Check your REST server routing or CORS.`;
+    // These may or may not exist on your build — we try anyway
+    const syncFound = await firstWorkingJson(REST_BASE, [
+      `/info/sync-status`,
+      `/sync/status`,
+      `/sync-status`,
+    ]);
+
+    const hashrateFound = await firstWorkingJson(REST_BASE, [
+      `/info/hashrate`,
+      `/hashrate`,
+    ]);
+
+    const bpsFound = await firstWorkingJson(REST_BASE, [
+      `/info/blockrate`,
+      `/blockrate`,
+    ]);
+
+    if (!netFound && !scoreFound){
+      $("netErr").innerHTML = `<span class="bad">No network endpoints found.</span>`;
       return;
     }
 
     const net = netFound?.data || {};
-    const blue = blueFound?.data;
-
-    // Normalize common fields (varies by build)
     const network = net?.network ?? net?.networkName ?? net?.name ?? "Kaspa";
-    const bps = net?.blockRate ?? net?.block_rate ?? net?.blocksPerSecond ?? net?.bps ?? null;
-    const diff = net?.difficulty ?? net?.networkDifficulty ?? null;
-    const hashrate = net?.hashrate ?? net?.networkHashrate ?? net?.hash_rate ?? null;
 
+    const diff = net?.difficulty ?? net?.networkDifficulty ?? net?.network_difficulty ?? null;
+
+    // score can be number or object
+    const scoreData = scoreFound?.data;
+    let score = "—";
+    if (typeof scoreData === "number") score = fmtNum(scoreData, 0);
+    else if (scoreData?.blueScore != null) score = fmtNum(scoreData.blueScore, 0);
+    else if (scoreData?.daaScore != null) score = fmtNum(scoreData.daaScore, 0);
+    else if (scoreData?.score != null) score = fmtNum(scoreData.score, 0);
+
+    // sync
+    const syncData = syncFound?.data;
     const sync =
-      net?.isSynced ?? net?.synced ?? net?.is_synced ??
-      (net?.syncStatus?.isSynced ?? net?.sync_status?.is_synced) ??
-      null;
-
+      syncData?.isSynced ?? syncData?.synced ?? syncData?.is_synced ??
+      syncData?.status?.isSynced ?? syncData?.status?.synced ?? null;
     const syncTxt = (sync === null) ? "—" : (sync ? `<span class="ok">Synced</span>` : `<span class="bad">Syncing</span>`);
 
-    // blue/daa score can be a number or object
-    let score = "—";
-    if (typeof blue === "number") score = fmtNum(blue, 0);
-    else if (blue?.blueScore != null) score = fmtNum(blue.blueScore, 0);
-    else if (blue?.daaScore != null) score = fmtNum(blue.daaScore, 0);
-    else if (blue?.score != null) score = fmtNum(blue.score, 0);
+    // hashrate
+    const hrData = hashrateFound?.data;
+    const hashrate =
+      hrData?.hashrate ?? hrData?.networkHashrate ?? hrData?.hash_rate ??
+      (typeof hrData === "number" ? hrData : null);
+
+    // block rate
+    const bpsData = bpsFound?.data;
+    const bps =
+      bpsData?.blockRate ?? bpsData?.bps ?? bpsData?.blocksPerSecond ??
+      (typeof bpsData === "number" ? bpsData : null);
 
     kvGrid($("netKvs"), [
       {k:"Network", v: network},
@@ -329,32 +387,32 @@
 
     const metaBits = [];
     if (netFound?.path) metaBits.push(`net: ${netFound.path}`);
-    if (blueFound?.path) metaBits.push(`score: ${blueFound.path}`);
+    if (scoreFound?.path) metaBits.push(`score: ${scoreFound.path}`);
+    if (syncFound?.path) metaBits.push(`sync: ${syncFound.path}`);
+    if (hashrateFound?.path) metaBits.push(`hash: ${hashrateFound.path}`);
+    if (bpsFound?.path) metaBits.push(`bps: ${bpsFound.path}`);
     $("netMeta").textContent = metaBits.join(" · ");
   }
 
+  // ====== BLOCKS (INDEXER) ======
   async function loadBlocks(){
     $("blocksErr").textContent = "";
     $("blocksMeta").textContent = "—";
-    $("blocksBody").innerHTML = `<tr><td colspan="4" class="status">Loading…</td></tr>`;
+    setLoading("blocks");
 
-    const found = await firstWorkingJson(API_BASE, [
+    const found = await firstWorkingJson(INDEXER_BASE, [
       `/blocks?limit=20`,
-      `/blocks?count=20`,
+      `/blocks?take=20`,
       `/blocks`,
-      `/block?limit=20`,
-      `/info/blocks?limit=20`,
     ]);
 
     if (!found){
       $("blocksBody").innerHTML = `<tr><td colspan="4" class="status">No blocks endpoint found.</td></tr>`;
-      $("blocksErr").innerHTML = `<span class="bad">Tip:</span> if your REST server doesn’t expose list-blocks, we can point this table at your indexer service instead.`;
+      $("blocksErr").innerHTML = `<span class="bad">Indexer blocks endpoint not found.</span>`;
       return;
     }
 
     const { path, data } = found;
-
-    // Normalize blocks list shapes
     const blocks = Array.isArray(data) ? data
       : Array.isArray(data?.blocks) ? data.blocks
       : Array.isArray(data?.items) ? data.items
@@ -367,35 +425,42 @@
     }
 
     $("blocksMeta").textContent = `Endpoint: ${path} · Showing ${Math.min(20, blocks.length)}`;
+
     $("blocksBody").innerHTML = blocks.slice(0,20).map(b => {
       const hash = b?.hash ?? b?.blockHash ?? b?.block_hash ?? b?.id ?? "—";
-      const time = b?.timestamp ?? b?.time ?? b?.blockTime ?? b?.acceptedAt ?? null;
-      const score = b?.blueScore ?? b?.blue_score ?? b?.daaScore ?? b?.daa_score ?? b?.height ?? b?.blockHeight ?? null;
-      const txs = b?.txCount ?? b?.transactionCount ?? (Array.isArray(b?.transactions) ? b.transactions.length : null);
+      const time = b?.timestamp ?? b?.time ?? b?.blockTime ?? b?.acceptedAt ?? b?.accepted_at ?? null;
+      const score = b?.blueScore ?? b?.blue_score ?? b?.daaScore ?? b?.daa_score ?? b?.height ?? b?.blockHeight ?? b?.block_height ?? null;
+      const txs = b?.txCount ?? b?.transactionCount ?? b?.transaction_count ?? (Array.isArray(b?.transactions) ? b.transactions.length : null);
+
+      const hashCell = (hash && hash !== "—")
+        ? `<a class="mono" href="${STREAM_BLOCK(hash)}" target="_blank" rel="noreferrer">${shortHash(hash, 22)}</a>`
+        : `<span class="mono">—</span>`;
+
       return `<tr>
         <td class="nowrap">${fmtDate(time)}</td>
-        <td class="mono">${shortHash(hash, 22)}</td>
+        <td>${hashCell}</td>
         <td class="nowrap">${score==null ? "—" : fmtNum(score,0)}</td>
         <td class="nowrap">${txs==null ? "—" : fmtNum(txs,0)}</td>
       </tr>`;
     }).join("");
   }
 
+  // ====== TXS (INDEXER) ======
   async function loadTxs(){
     $("txErr").textContent = "";
     $("txMeta").textContent = "—";
-    $("txBody").innerHTML = `<tr><td colspan="4" class="status">Loading…</td></tr>`;
+    setLoading("txs");
 
-    const found = await firstWorkingJson(API_BASE, [
+    const found = await firstWorkingJson(INDEXER_BASE, [
       `/transactions?limit=20`,
-      `/transactions?count=20`,
       `/txs?limit=20`,
+      `/txs`,
       `/transactions`,
     ]);
 
     if (!found){
       $("txBody").innerHTML = `<tr><td colspan="4" class="status">No transactions endpoint found.</td></tr>`;
-      $("txErr").innerHTML = `<span class="bad">Tip:</span> if your REST server doesn’t expose recent txs, we can populate this via your indexer DB API.`;
+      $("txErr").innerHTML = `<span class="bad">Indexer tx endpoint not found.</span>`;
       return;
     }
 
@@ -413,23 +478,32 @@
     }
 
     $("txMeta").textContent = `Endpoint: ${path} · Showing ${Math.min(20, txs.length)}`;
+
     $("txBody").innerHTML = txs.slice(0,20).map(t => {
       const txid = t?.transactionId ?? t?.txid ?? t?.id ?? t?.hash ?? "—";
-      const time = t?.blockTime ?? t?.timestamp ?? t?.time ?? t?.acceptedAt ?? null;
-      const vin = t?.inputs?.length ?? t?.vin?.length ?? t?.inputCount ?? null;
-      const vout = t?.outputs?.length ?? t?.vout?.length ?? t?.outputCount ?? null;
+      const time = t?.blockTime ?? t?.timestamp ?? t?.time ?? t?.acceptedAt ?? t?.accepted_at ?? null;
+      const vin = t?.inputs?.length ?? t?.vin?.length ?? t?.inputCount ?? t?.input_count ?? null;
+      const vout = t?.outputs?.length ?? t?.vout?.length ?? t?.outputCount ?? t?.output_count ?? null;
+
+      const txCell = (txid && txid !== "—")
+        ? `<a class="mono" href="${STREAM_TX(txid)}" target="_blank" rel="noreferrer">${shortHash(txid, 26)}</a>`
+        : `<span class="mono">—</span>`;
+
       return `<tr>
         <td class="nowrap">${fmtDate(time)}</td>
-        <td class="mono">${shortHash(txid, 26)}</td>
+        <td>${txCell}</td>
         <td class="nowrap">${vin==null ? "—" : fmtNum(vin,0)}</td>
         <td class="nowrap">${vout==null ? "—" : fmtNum(vout,0)}</td>
       </tr>`;
     }).join("");
   }
 
-  // ====== MAIN LOOP ======
+  // ====== REFRESH LOOP (SMOOTH) ======
+  let refreshing = false;
+
   async function refreshAll(){
     $("last").textContent = new Date().toLocaleTimeString();
+    // Run in parallel; each section handles its own errors
     await Promise.allSettled([
       loadMarket(),
       loadNetwork(),
@@ -438,10 +512,24 @@
     ]);
   }
 
-  $("refreshBtn").onclick = refreshAll;
+  async function loop(){
+    if (refreshing) return;
+    refreshing = true;
+    try{
+      await refreshAll();
+    } finally {
+      refreshing = false;
+      if ($("auto").checked){
+        setTimeout(loop, REFRESH_MS);
+      }
+    }
+  }
 
-  refreshAll();
-  setInterval(refreshAll, REFRESH_MS);
+  $("refreshBtn").onclick = () => refreshAll();
+  $("auto").onchange = () => { if ($("auto").checked) loop(); };
+
+  // kick off
+  loop();
 </script>
 </body>
 </html>
