@@ -12,189 +12,436 @@
       --r:14px;
     }
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(135deg,var(--bg),var(--panel2));color:var(--text);}
-    header{padding:16px 18px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
+    header{padding:16px 18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
     h1{margin:0;font-size:18px;letter-spacing:.2px}
+    a{color:var(--link);text-decoration:none}
+    main{padding:0 18px 22px;max-width:1400px;margin:0 auto;}
+    .card{background:rgba(18,26,42,.82);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);margin-top:12px;}
+    .card h2{margin:0 0 10px;font-size:13px;color:var(--muted);font-weight:650;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .status{font-size:12px;color:var(--muted)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .bad{color:var(--bad)} .ok{color:var(--ok)}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .pill{background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.25);padding:6px 10px;border-radius:999px;font-size:12px}
-    .pill a{color:var(--link);text-decoration:none}
-    main{padding:0 18px 22px;max-width:1200px;margin:0 auto;}
-    .grid{display:grid;gap:12px;grid-template-columns:repeat(12,1fr);}
-    .card{grid-column:span 12;background:rgba(18,26,42,.82);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);}
-    .card h2{margin:0 0 10px;font-size:13px;color:var(--muted);font-weight:650}
-    .kvs{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));}
+    .grid{
+      display:grid; gap:12px;
+      grid-template-columns:repeat(12, minmax(0, 1fr));
+      margin-top:12px;
+    }
+    .span-3{grid-column:span 3}
+    .span-4{grid-column:span 4}
+    .span-5{grid-column:span 5}
+    .span-6{grid-column:span 6}
+    .span-7{grid-column:span 7}
+    .span-8{grid-column:span 8}
+    .span-12{grid-column:span 12}
+    @media (max-width: 1100px){
+      .span-3,.span-4,.span-5,.span-6,.span-7,.span-8{grid-column:span 12}
+    }
+
+    .kvs{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px;}
     .kv{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px;}
     .kv .k{font-size:11px;color:var(--muted)}
-    .kv .v{font-size:16px;margin-top:4px;font-weight:700}
-    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
-    button,select{background:rgba(255,255,255,.05);color:var(--text);border:1px solid rgba(255,255,255,.10);padding:10px 12px;border-radius:12px;cursor:pointer}
-    button:hover{background:rgba(0,180,216,.10);border-color:rgba(0,180,216,.35)}
-    .status{font-size:12px;color:var(--muted)}
-    .status b{color:var(--text)}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-    .ok{color:var(--ok)} .bad{color:var(--bad)}
+    .kv .v{font-size:16px;margin-top:4px;font-weight:800}
+    .kv .s{font-size:12px;margin-top:4px;color:var(--muted)}
     table{width:100%;border-collapse:collapse;font-size:12px}
     th,td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:top}
     th{color:var(--muted);font-weight:650;text-align:left}
-    @media(min-width:860px){
-      .span6{grid-column:span 6;}
-      .span7{grid-column:span 7;}
-      .span5{grid-column:span 5;}
+    .pill{font-size:11px;padding:3px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05)}
+    .btn{
+      background:rgba(255,255,255,.05);color:var(--text);border:1px solid rgba(0,180,216,.35);
+      padding:8px 10px;border-radius:12px;cursor:pointer;
     }
+    .btn:hover{background:rgba(0,180,216,.10)}
+    .right{margin-left:auto}
+    .nowrap{white-space:nowrap}
   </style>
 </head>
+
 <body>
 <header>
-  <h1>Kaspa Surf — Live Dashboard</h1>
   <div class="row">
-    <span class="pill">API: <a id="apiLink" href="#" target="_blank" rel="noreferrer">rest-api.kaspa.surf</a></span>
-    <span class="pill">Docs: <a id="docsLink" href="#" target="_blank" rel="noreferrer">/docs</a></span>
-    <span class="pill status" id="statusPill">Status: <b>—</b></span>
+    <h1>Kaspa Surf — Dashboard</h1>
+    <span class="status">· <a href="address.html">Address Explorer</a></span>
+  </div>
+  <div class="row">
+    <span class="status">REST: <a id="apiLink" href="#" target="_blank" rel="noreferrer">rest-api.kaspa.surf</a></span>
+    <span class="status">Docs: <a id="docsLink" href="#" target="_blank" rel="noreferrer">/docs</a></span>
+    <span class="status">·</span>
+    <span class="status">Last refresh: <span id="last" class="mono">—</span></span>
+    <button class="btn" id="refreshBtn">Refresh</button>
   </div>
 </header>
 
 <main>
   <div class="grid">
-    <section class="card span6">
-      <h2>Network</h2>
+    <!-- Price / Market -->
+    <section class="card span-4">
+      <h2>
+        Market
+        <span class="status" id="marketMeta">—</span>
+      </h2>
+      <div class="kvs" id="marketKvs"></div>
+      <div class="status" id="marketErr"></div>
+    </section>
+
+    <!-- Network -->
+    <section class="card span-8">
+      <h2>
+        Network / Node
+        <span class="status" id="netMeta">—</span>
+      </h2>
       <div class="kvs" id="netKvs"></div>
-      <div class="controls">
-        <button id="refreshBtn">Refresh</button>
-        <label class="status">Auto:
-          <select id="auto">
-            <option value="0">Off</option>
-            <option value="15">15s</option>
-            <option value="30" selected>30s</option>
-            <option value="60">60s</option>
-          </select>
-        </label>
-        <span class="status">Updated: <b id="lastUpdate">—</b></span>
-      </div>
       <div class="status" id="netErr"></div>
     </section>
 
-    <section class="card span6">
-      <h2>Price & Supply</h2>
-      <div class="kvs" id="psKvs"></div>
-      <div class="status" id="psErr"></div>
+    <!-- Latest Blocks -->
+    <section class="card span-6">
+      <h2>
+        Latest Blocks
+        <span class="status" id="blocksMeta">—</span>
+      </h2>
+      <div style="overflow:auto">
+        <table>
+          <thead>
+            <tr>
+              <th class="nowrap">Time</th>
+              <th>Hash</th>
+              <th class="nowrap">Blue score / Height</th>
+              <th class="nowrap">Txs</th>
+            </tr>
+          </thead>
+          <tbody id="blocksBody"></tbody>
+        </table>
+      </div>
+      <div class="status" id="blocksErr"></div>
     </section>
 
-    <section class="card span12">
-      <h2>Quick Links</h2>
-      <div class="controls">
-        <button id="openExplorer">Open Address Explorer</button>
-        <button id="openDocs">Open API Docs</button>
+    <!-- Latest Transactions -->
+    <section class="card span-6">
+      <h2>
+        Latest Transactions
+        <span class="status" id="txMeta">—</span>
+      </h2>
+      <div style="overflow:auto">
+        <table>
+          <thead>
+            <tr>
+              <th class="nowrap">Time</th>
+              <th>TxID</th>
+              <th class="nowrap">Inputs</th>
+              <th class="nowrap">Outputs</th>
+            </tr>
+          </thead>
+          <tbody id="txBody"></tbody>
+        </table>
       </div>
-      <div class="status">Tip: if you want <span class="mono">api.kaspa.surf</span> to stop 502’ing, update your frontend to use <span class="mono">rest-api.kaspa.surf</span> (or proxy it in Caddy).</div>
+      <div class="status" id="txErr"></div>
     </section>
   </div>
 </main>
 
 <script>
+  // ====== CONFIG ======
+  // Your existing REST server (addresses/balance/utxos etc.)
   const API_BASE = "https://rest-api.kaspa.surf";
-  const DOCS_URL = API_BASE + "/docs";
-  const $ = (id) => document.getElementById(id);
+  // Optional: if you also have a public ticker endpoint (you used api.kaspa.surf in your logs)
+  const TICKER_BASE = "https://api.kaspa.surf";
 
-  $("apiLink").href = API_BASE;
-  $("apiLink").textContent = API_BASE.replace("https://","");
+  const DOCS_URL = API_BASE + "/docs";
+  const REFRESH_MS = 5000; // feels "kaspa.stream-ish"
+
+  // ====== HELPERS ======
+  const $ = (id) => document.getElementById(id);
+  $("apiLink").href = API_BASE; $("apiLink").textContent = API_BASE.replace("https://","");
   $("docsLink").href = DOCS_URL;
 
-  $("openDocs").onclick = () => window.open(DOCS_URL, "_blank");
-  $("openExplorer").onclick = () => window.location.href = "address.html";
-
-  const fmtNum = (n) => {
+  const fmtNum = (n, maxFrac=8) => {
     if (n === null || n === undefined || n === "") return "—";
     const x = Number(n);
     if (!Number.isFinite(x)) return String(n);
-    return x.toLocaleString(undefined, { maximumFractionDigits: 8 });
+    return x.toLocaleString(undefined, { maximumFractionDigits: maxFrac });
   };
+  const fmtDate = (msOrIso) => {
+    if (!msOrIso) return "—";
+    const d = typeof msOrIso === "number" ? new Date(msOrIso) : new Date(msOrIso);
+    return isNaN(d.getTime()) ? String(msOrIso) : d.toLocaleString();
+  };
+  const shortHash = (s, n=18) => (s ? (String(s).slice(0,n) + "…") : "—");
 
-  async function apiGet(path) {
-    const res = await fetch(API_BASE + path, { headers: { "accept": "application/json" }});
+  async function fetchWithTimeout(url, opts={}, timeoutMs=5000){
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), timeoutMs);
+    try{
+      const res = await fetch(url, { ...opts, signal: ctrl.signal });
+      return res;
+    } finally {
+      clearTimeout(t);
+    }
+  }
+
+  async function apiGetJson(base, path){
+    const res = await fetchWithTimeout(base + path, { headers: { "accept":"application/json" }}, 7000);
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     const ct = res.headers.get("content-type") || "";
-    return ct.includes("application/json") ? res.json() : res.text();
+    if (!ct.includes("application/json")) return await res.text();
+    return await res.json();
   }
 
   function kvGrid(el, items){
-    el.innerHTML = items.map(({k,v}) => `
-      <div class="kv"><div class="k">${k}</div><div class="v">${v}</div></div>
+    el.innerHTML = items.map(({k,v,s}) => `
+      <div class="kv">
+        <div class="k">${k}</div>
+        <div class="v">${v}</div>
+        ${s ? `<div class="s">${s}</div>` : ``}
+      </div>
     `).join("");
   }
 
-  function setStatus(ok, msg){
-    $("statusPill").innerHTML = `Status: <b class="${ok ? "ok":"bad"}">${msg}</b>`;
+  async function firstWorkingJson(base, paths){
+    for (const p of paths){
+      try{
+        const data = await apiGetJson(base, p);
+        return { path: p, data };
+      } catch(e){ /* keep trying */ }
+    }
+    return null;
+  }
+
+  // ====== LOADERS ======
+
+  async function loadMarket(){
+    $("marketErr").textContent = "";
+    $("marketMeta").textContent = "—";
+    kvGrid($("marketKvs"), [
+      {k:"Price", v:"—"}, {k:"24h Change", v:"—"},
+      {k:"24h High", v:"—"}, {k:"24h Low", v:"—"},
+    ]);
+
+    // Try a couple common ticker shapes
+    const found = await firstWorkingJson(TICKER_BASE, [
+      `/v1/ticker/kaspa`,
+      `/v1/ticker/KAS`,
+      `/ticker/kaspa`,
+    ]);
+
+    if (!found){
+      $("marketErr").innerHTML = `<span class="bad">No ticker endpoint found.</span> If you want, we can point this at CoinGecko later.`;
+      return;
+    }
+
+    const { path, data } = found;
+
+    // Normalize likely shapes:
+    // - {token:"kaspa", exchanges:[{last,high,low,change_pct,volume_24h}...], range:"today"}
+    // - {price, high_24h, low_24h, change_24h, ...}
+    let last=null, high=null, low=null, change=null, vol=null, src="";
+
+    if (data?.exchanges && Array.isArray(data.exchanges)){
+      const best = data.exchanges.find(x => x?.last != null) || data.exchanges[0];
+      last = best?.last;
+      high = best?.high;
+      low  = best?.low;
+      change = best?.change_pct;
+      vol = best?.volume_24h;
+      src = best?.exchange ? `source: ${best.exchange}` : "";
+    } else {
+      last = data?.price ?? data?.last ?? data?.usd ?? null;
+      high = data?.high_24h ?? data?.high ?? null;
+      low  = data?.low_24h ?? data?.low ?? null;
+      change = data?.change_24h ?? data?.change_pct ?? null;
+      vol = data?.volume_24h ?? data?.volume ?? null;
+    }
+
+    const ch = (change==null) ? "—" : `${fmtNum(change, 3)}%`;
+    const chClass = (change==null) ? "" : (Number(change) >= 0 ? "ok" : "bad");
+
+    kvGrid($("marketKvs"), [
+      {k:"Price (USD)", v: last==null ? "—" : `$${fmtNum(last, 6)}`, s: src},
+      {k:"24h Change", v:`<span class="${chClass}">${ch}</span>`},
+      {k:"24h High", v: high==null ? "—" : `$${fmtNum(high, 6)}`},
+      {k:"24h Low", v: low==null ? "—" : `$${fmtNum(low, 6)}`},
+      {k:"24h Volume", v: vol==null ? "—" : fmtNum(vol, 0)},
+    ]);
+
+    $("marketMeta").textContent = `Endpoint: ${path}`;
   }
 
   async function loadNetwork(){
     $("netErr").textContent = "";
-    try{
-      // Common Kaspa REST server endpoints
-      const [blockdag, blue] = await Promise.all([
-        apiGet("/info/blockdag"),
-        apiGet("/info/virtual-chain-blue-score"),
-      ]);
+    $("netMeta").textContent = "—";
+    kvGrid($("netKvs"), [
+      {k:"Network", v:"—"},
+      {k:"Block rate", v:"—"},
+      {k:"Difficulty", v:"—"},
+      {k:"Hashrate", v:"—"},
+      {k:"Blue score / DAA", v:"—"},
+      {k:"Node sync", v:"—"},
+    ]);
 
-      const net = blockdag?.network ?? blockdag?.networkName ?? "mainnet?";
-      const diff = blockdag?.difficulty ?? blockdag?.currentDifficulty ?? "—";
-      const hashrate = blockdag?.hashrate ?? blockdag?.networkHashrate ?? "—";
-      const daa = blockdag?.daaScore ?? blockdag?.virtualDaaScore ?? blockdag?.daa_score ?? "—";
-      const tip = blockdag?.virtualSelectedParentHash ?? blockdag?.virtualSelectedParent?.hash ?? "—";
-      const blueScore = blue?.blueScore ?? blue?.blue_score ?? "—";
+    // Standard Kaspa REST server exposes /info/network and often other /info/* endpoints. :contentReference[oaicite:2]{index=2}
+    const netFound = await firstWorkingJson(API_BASE, [
+      `/info/network`,
+      `/info`,
+      `/network`,
+    ]);
 
-      kvGrid($("netKvs"), [
-        {k:"Network", v:String(net)},
-        {k:"Virtual Blue Score", v:fmtNum(blueScore)},
-        {k:"DAA Score", v:fmtNum(daa)},
-        {k:"Difficulty", v:fmtNum(diff)},
-        {k:"Hashrate", v:fmtNum(hashrate)},
-        {k:"Tip (selected parent)", v:`<span class="mono">${String(tip).slice(0,18)}…</span>`},
-      ]);
+    const blueFound = await firstWorkingJson(API_BASE, [
+      `/info/virtual-chain-blue-score`,
+      `/info/virtual-chain-daa-score`,
+    ]);
 
-      $("lastUpdate").textContent = new Date().toLocaleTimeString();
-      setStatus(true, "OK");
-    } catch(e){
-      $("netErr").innerHTML = `<span class="bad">Network load failed:</span> ${e.message}`;
-      setStatus(false, "ERROR");
+    if (!netFound && !blueFound){
+      $("netErr").innerHTML = `<span class="bad">No network info endpoints found.</span> Check your REST server routing or CORS.`;
+      return;
     }
+
+    const net = netFound?.data || {};
+    const blue = blueFound?.data;
+
+    // Normalize common fields (varies by build)
+    const network = net?.network ?? net?.networkName ?? net?.name ?? "Kaspa";
+    const bps = net?.blockRate ?? net?.block_rate ?? net?.blocksPerSecond ?? net?.bps ?? null;
+    const diff = net?.difficulty ?? net?.networkDifficulty ?? null;
+    const hashrate = net?.hashrate ?? net?.networkHashrate ?? net?.hash_rate ?? null;
+
+    const sync =
+      net?.isSynced ?? net?.synced ?? net?.is_synced ??
+      (net?.syncStatus?.isSynced ?? net?.sync_status?.is_synced) ??
+      null;
+
+    const syncTxt = (sync === null) ? "—" : (sync ? `<span class="ok">Synced</span>` : `<span class="bad">Syncing</span>`);
+
+    // blue/daa score can be a number or object
+    let score = "—";
+    if (typeof blue === "number") score = fmtNum(blue, 0);
+    else if (blue?.blueScore != null) score = fmtNum(blue.blueScore, 0);
+    else if (blue?.daaScore != null) score = fmtNum(blue.daaScore, 0);
+    else if (blue?.score != null) score = fmtNum(blue.score, 0);
+
+    kvGrid($("netKvs"), [
+      {k:"Network", v: network},
+      {k:"Block rate", v: bps==null ? "—" : `${fmtNum(bps, 3)} /s`},
+      {k:"Difficulty", v: diff==null ? "—" : fmtNum(diff, 0)},
+      {k:"Hashrate", v: hashrate==null ? "—" : fmtNum(hashrate, 0)},
+      {k:"Blue score / DAA", v: score},
+      {k:"Node sync", v: syncTxt},
+    ]);
+
+    const metaBits = [];
+    if (netFound?.path) metaBits.push(`net: ${netFound.path}`);
+    if (blueFound?.path) metaBits.push(`score: ${blueFound.path}`);
+    $("netMeta").textContent = metaBits.join(" · ");
   }
 
-  async function loadPriceSupply(){
-    $("psErr").textContent = "";
-    try{
-      const [price, supply] = await Promise.all([
-        apiGet("/info/price"),
-        apiGet("/info/coinsupply"),
-      ]);
+  async function loadBlocks(){
+    $("blocksErr").textContent = "";
+    $("blocksMeta").textContent = "—";
+    $("blocksBody").innerHTML = `<tr><td colspan="4" class="status">Loading…</td></tr>`;
 
-      const p = (typeof price === "string") ? price : (price?.price ?? price?.usd ?? price?.priceUsd);
-      const circ = supply?.circulatingSupply ?? supply?.circulating ?? supply?.circulating_coins;
-      const total = supply?.totalSupply ?? supply?.total ?? supply?.total_coins;
-      const max = supply?.maxSupply ?? supply?.max ?? supply?.max_supply;
+    const found = await firstWorkingJson(API_BASE, [
+      `/blocks?limit=20`,
+      `/blocks?count=20`,
+      `/blocks`,
+      `/block?limit=20`,
+      `/info/blocks?limit=20`,
+    ]);
 
-      kvGrid($("psKvs"), [
-        {k:"KAS Price (USD)", v: p ? `$${fmtNum(p)}` : "—"},
-        {k:"Circulating", v:fmtNum(circ)},
-        {k:"Total", v:fmtNum(total)},
-        {k:"Max", v:fmtNum(max)},
-      ]);
-    } catch(e){
-      $("psErr").innerHTML = `<span class="bad">Price/supply load failed:</span> ${e.message}`;
+    if (!found){
+      $("blocksBody").innerHTML = `<tr><td colspan="4" class="status">No blocks endpoint found.</td></tr>`;
+      $("blocksErr").innerHTML = `<span class="bad">Tip:</span> if your REST server doesn’t expose list-blocks, we can point this table at your indexer service instead.`;
+      return;
     }
+
+    const { path, data } = found;
+
+    // Normalize blocks list shapes
+    const blocks = Array.isArray(data) ? data
+      : Array.isArray(data?.blocks) ? data.blocks
+      : Array.isArray(data?.items) ? data.items
+      : [];
+
+    if (!blocks.length){
+      $("blocksBody").innerHTML = `<tr><td colspan="4" class="status">No blocks returned.</td></tr>`;
+      $("blocksMeta").textContent = `Endpoint: ${path}`;
+      return;
+    }
+
+    $("blocksMeta").textContent = `Endpoint: ${path} · Showing ${Math.min(20, blocks.length)}`;
+    $("blocksBody").innerHTML = blocks.slice(0,20).map(b => {
+      const hash = b?.hash ?? b?.blockHash ?? b?.block_hash ?? b?.id ?? "—";
+      const time = b?.timestamp ?? b?.time ?? b?.blockTime ?? b?.acceptedAt ?? null;
+      const score = b?.blueScore ?? b?.blue_score ?? b?.daaScore ?? b?.daa_score ?? b?.height ?? b?.blockHeight ?? null;
+      const txs = b?.txCount ?? b?.transactionCount ?? (Array.isArray(b?.transactions) ? b.transactions.length : null);
+      return `<tr>
+        <td class="nowrap">${fmtDate(time)}</td>
+        <td class="mono">${shortHash(hash, 22)}</td>
+        <td class="nowrap">${score==null ? "—" : fmtNum(score,0)}</td>
+        <td class="nowrap">${txs==null ? "—" : fmtNum(txs,0)}</td>
+      </tr>`;
+    }).join("");
   }
 
-  $("refreshBtn").onclick = async () => { await Promise.all([loadNetwork(), loadPriceSupply()]); };
+  async function loadTxs(){
+    $("txErr").textContent = "";
+    $("txMeta").textContent = "—";
+    $("txBody").innerHTML = `<tr><td colspan="4" class="status">Loading…</td></tr>`;
 
-  let timer=null;
-  $("auto").onchange = () => {
-    if (timer) clearInterval(timer);
-    const s = Number($("auto").value);
-    if (s>0) timer = setInterval(() => { loadNetwork(); loadPriceSupply(); }, s*1000);
-  };
+    const found = await firstWorkingJson(API_BASE, [
+      `/transactions?limit=20`,
+      `/transactions?count=20`,
+      `/txs?limit=20`,
+      `/transactions`,
+    ]);
 
-  (async () => {
-    await Promise.all([loadNetwork(), loadPriceSupply()]);
-    $("auto").dispatchEvent(new Event("change"));
-  })();
+    if (!found){
+      $("txBody").innerHTML = `<tr><td colspan="4" class="status">No transactions endpoint found.</td></tr>`;
+      $("txErr").innerHTML = `<span class="bad">Tip:</span> if your REST server doesn’t expose recent txs, we can populate this via your indexer DB API.`;
+      return;
+    }
+
+    const { path, data } = found;
+
+    const txs = Array.isArray(data) ? data
+      : Array.isArray(data?.transactions) ? data.transactions
+      : Array.isArray(data?.items) ? data.items
+      : [];
+
+    if (!txs.length){
+      $("txBody").innerHTML = `<tr><td colspan="4" class="status">No transactions returned.</td></tr>`;
+      $("txMeta").textContent = `Endpoint: ${path}`;
+      return;
+    }
+
+    $("txMeta").textContent = `Endpoint: ${path} · Showing ${Math.min(20, txs.length)}`;
+    $("txBody").innerHTML = txs.slice(0,20).map(t => {
+      const txid = t?.transactionId ?? t?.txid ?? t?.id ?? t?.hash ?? "—";
+      const time = t?.blockTime ?? t?.timestamp ?? t?.time ?? t?.acceptedAt ?? null;
+      const vin = t?.inputs?.length ?? t?.vin?.length ?? t?.inputCount ?? null;
+      const vout = t?.outputs?.length ?? t?.vout?.length ?? t?.outputCount ?? null;
+      return `<tr>
+        <td class="nowrap">${fmtDate(time)}</td>
+        <td class="mono">${shortHash(txid, 26)}</td>
+        <td class="nowrap">${vin==null ? "—" : fmtNum(vin,0)}</td>
+        <td class="nowrap">${vout==null ? "—" : fmtNum(vout,0)}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  // ====== MAIN LOOP ======
+  async function refreshAll(){
+    $("last").textContent = new Date().toLocaleTimeString();
+    await Promise.allSettled([
+      loadMarket(),
+      loadNetwork(),
+      loadBlocks(),
+      loadTxs(),
+    ]);
+  }
+
+  $("refreshBtn").onclick = refreshAll;
+
+  refreshAll();
+  setInterval(refreshAll, REFRESH_MS);
 </script>
 </body>
 </html>
