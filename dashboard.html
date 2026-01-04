@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kaspa Surf — Dashboard</title>
+  <style>
+    :root{
+      --bg:#0a0f1a; --panel:#121a2a; --panel2:#1c2333;
+      --text:#e0e0e0; --muted:#aab3c5; --accent:#00b4d8; --link:#00d4ff;
+      --ok:#4ade80; --bad:#ff5c5c;
+      --r:14px;
+    }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(135deg,var(--bg),var(--panel2));color:var(--text);}
+    header{padding:16px 18px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
+    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{background:rgba(0,180,216,.12);border:1px solid rgba(0,180,216,.25);padding:6px 10px;border-radius:999px;font-size:12px}
+    .pill a{color:var(--link);text-decoration:none}
+    main{padding:0 18px 22px;max-width:1200px;margin:0 auto;}
+    .grid{display:grid;gap:12px;grid-template-columns:repeat(12,1fr);}
+    .card{grid-column:span 12;background:rgba(18,26,42,.82);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);}
+    .card h2{margin:0 0 10px;font-size:13px;color:var(--muted);font-weight:650}
+    .kvs{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));}
+    .kv{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px;}
+    .kv .k{font-size:11px;color:var(--muted)}
+    .kv .v{font-size:16px;margin-top:4px;font-weight:700}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+    button,select{background:rgba(255,255,255,.05);color:var(--text);border:1px solid rgba(255,255,255,.10);padding:10px 12px;border-radius:12px;cursor:pointer}
+    button:hover{background:rgba(0,180,216,.10);border-color:rgba(0,180,216,.35)}
+    .status{font-size:12px;color:var(--muted)}
+    .status b{color:var(--text)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .ok{color:var(--ok)} .bad{color:var(--bad)}
+    table{width:100%;border-collapse:collapse;font-size:12px}
+    th,td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:top}
+    th{color:var(--muted);font-weight:650;text-align:left}
+    @media(min-width:860px){
+      .span6{grid-column:span 6;}
+      .span7{grid-column:span 7;}
+      .span5{grid-column:span 5;}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Kaspa Surf — Live Dashboard</h1>
+  <div class="row">
+    <span class="pill">API: <a id="apiLink" href="#" target="_blank" rel="noreferrer">rest-api.kaspa.surf</a></span>
+    <span class="pill">Docs: <a id="docsLink" href="#" target="_blank" rel="noreferrer">/docs</a></span>
+    <span class="pill status" id="statusPill">Status: <b>—</b></span>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+    <section class="card span6">
+      <h2>Network</h2>
+      <div class="kvs" id="netKvs"></div>
+      <div class="controls">
+        <button id="refreshBtn">Refresh</button>
+        <label class="status">Auto:
+          <select id="auto">
+            <option value="0">Off</option>
+            <option value="15">15s</option>
+            <option value="30" selected>30s</option>
+            <option value="60">60s</option>
+          </select>
+        </label>
+        <span class="status">Updated: <b id="lastUpdate">—</b></span>
+      </div>
+      <div class="status" id="netErr"></div>
+    </section>
+
+    <section class="card span6">
+      <h2>Price & Supply</h2>
+      <div class="kvs" id="psKvs"></div>
+      <div class="status" id="psErr"></div>
+    </section>
+
+    <section class="card span12">
+      <h2>Quick Links</h2>
+      <div class="controls">
+        <button id="openExplorer">Open Address Explorer</button>
+        <button id="openDocs">Open API Docs</button>
+      </div>
+      <div class="status">Tip: if you want <span class="mono">api.kaspa.surf</span> to stop 502’ing, update your frontend to use <span class="mono">rest-api.kaspa.surf</span> (or proxy it in Caddy).</div>
+    </section>
+  </div>
+</main>
+
+<script>
+  const API_BASE = "https://rest-api.kaspa.surf";
+  const DOCS_URL = API_BASE + "/docs";
+  const $ = (id) => document.getElementById(id);
+
+  $("apiLink").href = API_BASE;
+  $("apiLink").textContent = API_BASE.replace("https://","");
+  $("docsLink").href = DOCS_URL;
+
+  $("openDocs").onclick = () => window.open(DOCS_URL, "_blank");
+  $("openExplorer").onclick = () => window.location.href = "address.html";
+
+  const fmtNum = (n) => {
+    if (n === null || n === undefined || n === "") return "—";
+    const x = Number(n);
+    if (!Number.isFinite(x)) return String(n);
+    return x.toLocaleString(undefined, { maximumFractionDigits: 8 });
+  };
+
+  async function apiGet(path) {
+    const res = await fetch(API_BASE + path, { headers: { "accept": "application/json" }});
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    const ct = res.headers.get("content-type") || "";
+    return ct.includes("application/json") ? res.json() : res.text();
+  }
+
+  function kvGrid(el, items){
+    el.innerHTML = items.map(({k,v}) => `
+      <div class="kv"><div class="k">${k}</div><div class="v">${v}</div></div>
+    `).join("");
+  }
+
+  function setStatus(ok, msg){
+    $("statusPill").innerHTML = `Status: <b class="${ok ? "ok":"bad"}">${msg}</b>`;
+  }
+
+  async function loadNetwork(){
+    $("netErr").textContent = "";
+    try{
+      // Common Kaspa REST server endpoints
+      const [blockdag, blue] = await Promise.all([
+        apiGet("/info/blockdag"),
+        apiGet("/info/virtual-chain-blue-score"),
+      ]);
+
+      const net = blockdag?.network ?? blockdag?.networkName ?? "mainnet?";
+      const diff = blockdag?.difficulty ?? blockdag?.currentDifficulty ?? "—";
+      const hashrate = blockdag?.hashrate ?? blockdag?.networkHashrate ?? "—";
+      const daa = blockdag?.daaScore ?? blockdag?.virtualDaaScore ?? blockdag?.daa_score ?? "—";
+      const tip = blockdag?.virtualSelectedParentHash ?? blockdag?.virtualSelectedParent?.hash ?? "—";
+      const blueScore = blue?.blueScore ?? blue?.blue_score ?? "—";
+
+      kvGrid($("netKvs"), [
+        {k:"Network", v:String(net)},
+        {k:"Virtual Blue Score", v:fmtNum(blueScore)},
+        {k:"DAA Score", v:fmtNum(daa)},
+        {k:"Difficulty", v:fmtNum(diff)},
+        {k:"Hashrate", v:fmtNum(hashrate)},
+        {k:"Tip (selected parent)", v:`<span class="mono">${String(tip).slice(0,18)}…</span>`},
+      ]);
+
+      $("lastUpdate").textContent = new Date().toLocaleTimeString();
+      setStatus(true, "OK");
+    } catch(e){
+      $("netErr").innerHTML = `<span class="bad">Network load failed:</span> ${e.message}`;
+      setStatus(false, "ERROR");
+    }
+  }
+
+  async function loadPriceSupply(){
+    $("psErr").textContent = "";
+    try{
+      const [price, supply] = await Promise.all([
+        apiGet("/info/price"),
+        apiGet("/info/coinsupply"),
+      ]);
+
+      const p = (typeof price === "string") ? price : (price?.price ?? price?.usd ?? price?.priceUsd);
+      const circ = supply?.circulatingSupply ?? supply?.circulating ?? supply?.circulating_coins;
+      const total = supply?.totalSupply ?? supply?.total ?? supply?.total_coins;
+      const max = supply?.maxSupply ?? supply?.max ?? supply?.max_supply;
+
+      kvGrid($("psKvs"), [
+        {k:"KAS Price (USD)", v: p ? `$${fmtNum(p)}` : "—"},
+        {k:"Circulating", v:fmtNum(circ)},
+        {k:"Total", v:fmtNum(total)},
+        {k:"Max", v:fmtNum(max)},
+      ]);
+    } catch(e){
+      $("psErr").innerHTML = `<span class="bad">Price/supply load failed:</span> ${e.message}`;
+    }
+  }
+
+  $("refreshBtn").onclick = async () => { await Promise.all([loadNetwork(), loadPriceSupply()]); };
+
+  let timer=null;
+  $("auto").onchange = () => {
+    if (timer) clearInterval(timer);
+    const s = Number($("auto").value);
+    if (s>0) timer = setInterval(() => { loadNetwork(); loadPriceSupply(); }, s*1000);
+  };
+
+  (async () => {
+    await Promise.all([loadNetwork(), loadPriceSupply()]);
+    $("auto").dispatchEvent(new Event("change"));
+  })();
+</script>
+</body>
+</html>
