@@ -1,27 +1,9 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kaspa Surf - Curated Kaspa Cryptocurrency Links & Resources</title>
-  <meta name="description" content="Ride the BlockDAG wave with Kaspa Surf: A curated directory of Kaspa links including wallets, explorers, exchanges, mining pools, and community resources for the fastest PoW blockchain.">
-  <meta name="keywords" content="Kaspa links, Kaspa resources, BlockDAG directory, Kaspa wallets, Kaspa explorers, Kaspa mining, cryptocurrency links">
-  <meta name="robots" content="index, follow">
-
-  <meta property="og:title" content="Kaspa Surf - Essential Kaspa Crypto Links">
-  <meta property="og:description" content="Discover curated resources for Kaspa: Wallets, exchanges, mining, and more.">
-  <meta property="og:url" content="https://kaspa.surf/">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://kaspa.surf/favicon.png">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Kaspa Surf - Curated Kaspa Links">
-  <meta name="twitter:description" content="Ride the wave of Kaspa resources.">
-
-  <link rel="canonical" href="https://kaspa.surf/">
-  <link rel="icon" href="/favicon.png" type="image/x-icon">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <title>Kaspa Surf - Live Exchange Prices</title>
 
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
@@ -29,94 +11,29 @@
 
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Kaspa Surf",
-    "url": "https://kaspa.surf/",
-    "description": "Curated directory of Kaspa cryptocurrency resources",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://kaspa.surf/?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    },
-    "mainEntity": {
-      "@type": "CollectionPage",
-      "name": "Kaspa Links Directory",
-      "hasPart": [
-        {"@type": "ItemList", "name": "Featured Links", "itemListElement": ["https://kaspa.org/", "https://explorer.kaspa.org/"]},
-        {"@type": "ItemList", "name": "Wallets", "itemListElement": ["https://wallet.kaspanet.io/"]}
-      ]
-    }
-  }
-  </script>
 </head>
+
 <body class="dark">
-        <header>
-    <div class="header-left">
-        <a href="https://kaspa.surf"><img src="https://kaspa.surf/img/kaspa-surf-logo.png" alt="Kaspa Surf Icon" id="kaspa-surf-icon"></a>
-    </div>
-    <div class="header-right">
-        <p><a href="https://kaspa.surf/exchange-prices">Exchange Prices</a><span class="badge hot">Beta🔥</span></p>
-        <div id="kas-price">Loading KAS price…</div>
-        <button id="mode-toggle" aria-label="Toggle light/dark mode">🌙</button>
-    </div>
-<script>
-const API = "https://api.kaspa.surf";
+<header>
+  <div class="header-left">
+    <a href="https://kaspa.surf">
+      <img src="https://kaspa.surf/img/kaspa-surf-logo.png" alt="Kaspa Surf Icon" id="kaspa-surf-icon">
+    </a>
+  </div>
+  <div class="header-right">
+    <p><a href="https://kaspa.surf/exchange-prices">Exchange Prices</a><span class="badge hot">Beta🔥</span></p>
+    <div id="kas-price">Loading KAS price…</div>
+    <button id="mode-toggle" aria-label="Toggle light/dark mode">🌙</button>
+  </div>
+</header>
 
-function fmtUsd(n, decimals = 5) {
-  return Number(n).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-}
-
-async function loadKaspaPrice() {
-  const el = document.getElementById("kas-price");
-
-  try {
-    const r = await fetch(`${API}/v1/ticker/kaspa`, { cache: "no-store" });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const d = await r.json();
-
-    const price = d?.aggregate?.vwap ?? d?.aggregate?.avg_price;
-
-    // pick an exchange with a valid last + change_pct (for a "24h change" display)
-    const best = (d.exchanges || [])
-      .filter(x => x && x.last != null && x.change_pct != null)
-      .sort((a, b) => (b.volume_24h ?? 0) - (a.volume_24h ?? 0))[0];
-
-    const changePct = best?.change_pct;
-    const changeHtml = (changePct == null)
-      ? ""
-      : ` <span style="color:${changePct >= 0 ? "lime" : "red"}">(${changePct >= 0 ? '+' : '-'} ${Math.abs(changePct).toFixed(2)}%)</span>
-          <small style="opacity:.8">via ${best.exchange}</small>`;
-
-    const healthHtml = `<div style="opacity:.85; font-size:.95em; color:lime;">
-      • Healthy ✔
-    </div>`;
-
-    el.innerHTML = `
-      <div style="display:flex; flex-direction:row; align-items:center; gap:8px; white-space:nowrap;">
-        <div><strong>$${fmtUsd(price, 5)} ${changeHtml}</strong></div>
-        ${healthHtml}
-      </div>
-    `;
-  } catch (e) {
-    console.error(e);
-    el.innerHTML = 'Failed to load <span style="color:red;">• Unhealthy ❌</span>';
-  }
-}
-
-loadKaspaPrice();
-setInterval(loadKaspaPrice, 60000);
-</script>
-    </header>
 <main>
   <div class="ks-wrap">
     <div class="ks-header">
       <div>
         <h1 class="ks-title">Live Kaspa Exchange Prices</h1>
         <div class="ks-sub" id="ks-updated">Loading…</div>
+        <div class="ks-sub" id="ks-error" style="display:none;color:#ff6b6b;margin-top:6px;"></div>
       </div>
 
       <div class="ks-cards">
@@ -195,23 +112,19 @@ setInterval(loadKaspaPrice, 60000);
     </div>
   </div>
 
-  <!-- Chart.js (defer so it doesn't block first paint) -->
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
   (() => {
-    // ========= CONFIG =========
     const API = "https://api.kaspa.surf";
-    const POLL_MS = 60_000;                  // 60s
     const TICKER_PATH = "/v1/ticker/kaspa";
+    const POLL_MS = 60_000;
 
-    // LocalStorage keys
     const CHART_KEY = "kaspa_surf_kas_chart_points_v1";
     const LAST_TICKER_KEY = "kaspa_surf_last_ticker_v1";
 
     const el = (id) => document.getElementById(id);
 
-    // ========= FORMATTERS =========
     const fmtUsd = (n, d=5) =>
       Number(n).toLocaleString(undefined, { minimumFractionDigits:d, maximumFractionDigits:d });
 
@@ -225,7 +138,6 @@ setInterval(loadKaspaPrice, 60000);
       return pct >= 0 ? "lime" : "red";
     }
 
-    // ========= STORAGE =========
     function loadJSON(key, fallback) {
       try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
       catch { return fallback; }
@@ -233,27 +145,22 @@ setInterval(loadKaspaPrice, 60000);
     function saveJSON(key, value) {
       try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
     }
-
-    // 7 days rolling
     function prunePoints(points) {
       const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
       return (points || []).filter(p => p && p.t >= cutoff && Number.isFinite(p.v));
     }
 
-    // ========= STATE =========
     let rangeHours = 24;
     let lastData = loadJSON(LAST_TICKER_KEY, null);
-    // If cached ticker is older than 10 minutes, ignore it
-if (lastData?.timestamp) {
-  const ts = new Date(lastData.timestamp).valueOf();
-  if (Number.isFinite(ts) && (Date.now() - ts > 10 * 60 * 1000)) {
-    lastData = null;
-    try { localStorage.removeItem(LAST_TICKER_KEY); } catch {}
-  }
-}
 
+    function showError(msg) {
+      const box = el("ks-error");
+      if (!box) return;
+      if (!msg) { box.style.display = "none"; box.textContent = ""; return; }
+      box.style.display = "block";
+      box.textContent = msg;
+    }
 
-    // ========= UI RENDER =========
     function spreadPct(last, vwap) {
       if (last == null || vwap == null) return null;
       return ((last - vwap) / vwap) * 100;
@@ -274,14 +181,9 @@ if (lastData?.timestamp) {
       const box = el("kas-price");
       if (!box) return;
 
-      if (!d) {
-        box.textContent = "Loading KAS price…";
-        return;
-      }
+      if (!d) { box.textContent = "Loading KAS price…"; return; }
 
       const price = d?.aggregate?.vwap ?? d?.aggregate?.avg_price;
-      const vol24 = d?.aggregate?.total_volume_24h ?? null;
-
       const best = pickBestChangeExchange(d.exchanges);
       const changePct = best?.change_pct;
 
@@ -290,17 +192,7 @@ if (lastData?.timestamp) {
         : ` <span style="color:${changePct >= 0 ? "lime" : "red"}">(${changePct.toFixed(2)}%)</span>
             <small style="opacity:.8">via ${best.exchange}</small>`;
 
-      const ts = d.timestamp ? new Date(d.timestamp) : null;
-      const updated = ts && !Number.isNaN(ts.valueOf()) ? ts.toLocaleTimeString() : "—";
-
-      box.innerHTML = `
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div><strong>KAS:</strong> ${price == null ? "—" : `$${fmtUsd(price, 5)}`} ${changeHtml}</div>
-          <div style="opacity:.85;font-size:.95em">
-            24h Volume: ${vol24 == null ? "—" : fmtNum(vol24)} &nbsp;•&nbsp; Updated: ${updated}
-          </div>
-        </div>
-      `;
+      box.innerHTML = `<strong>$${price == null ? "—" : fmtUsd(price, 5)} ${changeHtml}</strong>`;
     }
 
     function setCards(d) {
@@ -321,7 +213,6 @@ if (lastData?.timestamp) {
           : "Updated: —";
     }
 
-    // ✅ UPDATED FUNCTION: shows exchanges even if x.last is null
     function renderTableFromState() {
       const d = lastData;
       const tbody = el("ks-tbody");
@@ -340,7 +231,7 @@ if (lastData?.timestamp) {
       const rows = (d.exchanges || [])
         .filter(x => x && x.exchange)
         .filter(x => !filter || x.exchange.toLowerCase().includes(filter))
-        // keep exchanges with any meaningful fields (not just last)
+        // keep exchanges with any meaningful fields
         .filter(x =>
           x.last != null ||
           x.high != null ||
@@ -348,7 +239,6 @@ if (lastData?.timestamp) {
           x.volume_24h != null ||
           x.change_pct != null
         )
-        // spread only when last and vwap exist
         .map(x => ({
           ...x,
           spread_vs_vwap: (x.last == null || vwap == null) ? null : spreadPct(x.last, vwap)
@@ -371,7 +261,6 @@ if (lastData?.timestamp) {
         const ch = x.change_pct;
         const sp = x.spread_vs_vwap;
         const spText = sp == null ? "—" : `${sp.toFixed(2)}%`;
-
         const lastText = (x.last == null) ? "—" : `$${fmtUsd(x.last, 5)}`;
 
         tbody.insertAdjacentHTML("beforeend", `
@@ -386,23 +275,8 @@ if (lastData?.timestamp) {
           </tr>
         `);
       }
-
-      const bySpread = rows
-        .filter(r => r.spread_vs_vwap != null)
-        .sort((a,b)=>b.spread_vs_vwap-a.spread_vs_vwap);
-
-      const top = bySpread[0];
-      const bot = bySpread[bySpread.length - 1];
-
-      el("ks-notes").innerHTML = (top && bot) ? `
-        <div class="ks-sub">
-          Highest vs VWAP: <strong>${top.exchange}</strong> (${top.spread_vs_vwap.toFixed(2)}%) ·
-          Lowest vs VWAP: <strong>${bot.exchange}</strong> (${bot.spread_vs_vwap.toFixed(2)}%)
-        </div>
-      ` : "";
     }
 
-    // ========= CHART =========
     function bootChartWhenReady(cb) {
       if (window.Chart) return cb();
       requestAnimationFrame(() => bootChartWhenReady(cb));
@@ -411,7 +285,6 @@ if (lastData?.timestamp) {
     function renderChart(chart, points) {
       const cutoff = Date.now() - rangeHours * 60 * 60 * 1000;
       const view = (points || []).filter(p => p.t >= cutoff);
-
       chart.data.labels = view.map(p => new Date(p.t).toLocaleTimeString());
       chart.data.datasets[0].data = view.map(p => p.v);
       chart.update();
@@ -427,68 +300,44 @@ if (lastData?.timestamp) {
       saveJSON(CHART_KEY, points);
     }
 
-    // ========= FETCH (cache-friendly) =========
-    function getTimestampMs(d) {
-      const ts = d?.timestamp ? new Date(d.timestamp).valueOf() : NaN;
-      return Number.isFinite(ts) ? ts : NaN;
-    }
-
-async function fetchTickerSmart() {
-  const url = `${API}${TICKER_PATH}?_=${Date.now()}`; // ALWAYS cache-bust
-  const r = await fetch(url, { cache: "no-store" });
-  if (!r.ok) throw new Error(`API HTTP ${r.status}`);
-  return r.json();
-}
-        } else {
-          // return the parsed one we already have
-          return d;
-        }
-      }
-
+    async function fetchTicker() {
+      const url = `${API}${TICKER_PATH}?_=${Date.now()}`; // always cache-bust
+      const r = await fetch(url, { cache: "no-store" });
       if (!r.ok) throw new Error(`API HTTP ${r.status}`);
       return r.json();
     }
 
-    // ========= MAIN REFRESH =========
     async function refreshTicker({ silent = false } = {}) {
       try {
-        const d = await fetchTickerSmart();
+        showError("");
 
+        const d = await fetchTicker();
         lastData = d;
         saveJSON(LAST_TICKER_KEY, d);
 
-        // Update UI
         setHeaderPrice(d);
         setCards(d);
         renderTableFromState();
-
-        // Update chart store (points)
         updateChartStoreFromData(d);
 
-        // If chart exists, repaint it from store
         if (window.__kaspaSurfChart) {
           const pts = prunePoints(loadJSON(CHART_KEY, []));
           renderChart(window.__kaspaSurfChart, pts);
         }
       } catch (e) {
         console.error(e);
-        if (!silent) {
-          el("ks-updated").textContent = "API error — check console";
-          const pts = prunePoints(loadJSON(CHART_KEY, []));
-          if (window.__kaspaSurfChart) renderChart(window.__kaspaSurfChart, pts);
-        }
+        if (!silent) showError(`API error: ${e?.message || e}`);
+        el("ks-updated").textContent = "API error — check console";
       }
     }
 
-    // ========= BOOT =========
-    // 1) Render from cached ticker immediately (instant paint)
+    // boot from cache (instant paint)
     if (lastData) {
       setHeaderPrice(lastData);
       setCards(lastData);
     }
     renderTableFromState();
 
-    // 2) Boot chart when Chart.js is ready (non-blocking)
     bootChartWhenReady(() => {
       const ctx = el("ks-chart").getContext("2d");
       const chart = new Chart(ctx, {
@@ -505,28 +354,16 @@ async function fetchTickerSmart() {
         options: {
           responsive: true,
           animation: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: (item) => `$${fmtUsd(item.parsed.y, 6)}`
-              }
-            }
-          },
-          scales: {
-            x: { ticks: { maxTicksLimit: 6 } },
-            y: { ticks: { callback: (v) => `$${v}` } }
-          }
+          plugins: { legend: { display: false } },
+          scales: { x: { ticks: { maxTicksLimit: 6 } } }
         }
       });
       window.__kaspaSurfChart = chart;
 
-      // initial chart render from store
       const pts = prunePoints(loadJSON(CHART_KEY, []));
       renderChart(chart, pts);
     });
 
-    // 3) Controls (NO refetch on filter/sort)
     document.querySelectorAll(".ks-btn[data-range]").forEach(btn => {
       btn.addEventListener("click", () => {
         rangeHours = Number(btn.dataset.range);
@@ -541,26 +378,22 @@ async function fetchTickerSmart() {
     });
 
     el("ks-clear-all").addEventListener("click", () => {
-  try { localStorage.removeItem(CHART_KEY); } catch {}
-  try { localStorage.removeItem(LAST_TICKER_KEY); } catch {}
-  lastData = null;
-  renderTableFromState();
-  refreshTicker({ silent: false });
-});
+      try { localStorage.removeItem(CHART_KEY); } catch {}
+      try { localStorage.removeItem(LAST_TICKER_KEY); } catch {}
+      lastData = null;
+      renderTableFromState();
+      refreshTicker({ silent: false });
+    });
 
-    el("ks-filter").addEventListener("input", () => renderTableFromState());
-    el("ks-sort").addEventListener("change", () => renderTableFromState());
+    el("ks-filter").addEventListener("input", renderTableFromState);
+    el("ks-sort").addEventListener("change", renderTableFromState);
 
-    // 4) Background refresh ASAP (doesn't block initial paint)
-    refreshTicker({ silent: true });
-
-    // 5) Regular polling
+    refreshTicker({ silent: false });
     setInterval(() => refreshTicker({ silent: true }), POLL_MS);
   })();
   </script>
 
   <style>
-    /* Minimal styling that respects your CSS variables */
     .ks-wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
     .ks-header { display:flex; gap:16px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; }
     .ks-title { margin:0; font-size: 1.8rem; }
@@ -594,52 +427,22 @@ async function fetchTickerSmart() {
     .ks-table { width: 100%; border-collapse: collapse; min-width: 820px; }
     .ks-table th, .ks-table td { padding: 10px 10px; border-bottom: 1px solid rgba(255,255,255,.08); }
     .ks-table thead th { position: sticky; top: 0; background: var(--bg-secondary); z-index: 1; text-align:left; }
-
     .ks-table td.r, .ks-table th.r { text-align:right; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-    .ks-footer { margin-top: 10px; }
   </style>
 </main>
 
 <footer>
-  <p class="footer-text">&copy; 2025 Kaspa Surf. Curated links for the Kaspa ecosystem. Not affiliated with Kaspa.org. Last Updated: January 1, 2026 ⏰</p>
-  <p class="footer-text">This site is made for the Kaspa Community if you found useful please consider supporting by donating KAS to <a href="https://kaspa.stream/addresses/kaspa:qq66jzzvtpxpegm7g96kqmeyeyv5c6dq7qgkvcr0eesng9cffr5qvdqux2zat" target="_blank" rel="noopener noreferrer">hyperwave.kas</a></p>
-  <p class="footer-text">While every effort has been made to ensure the accuracy of these links, we are not responsible for the content of external sites or any changes to them.</p>
-  <div class="social-icons">
-    <a href="https://t.me/kaspasurf" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
-    <a href="https://x.com/testnet420" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
-  </div>
+  <p class="footer-text">&copy; 2025 Kaspa Surf.</p>
 </footer>
 
 <script>
-  // Light/dark toggle
   const toggle = document.getElementById('mode-toggle');
   const body = document.body;
-
   toggle.addEventListener('click', () => {
     body.classList.toggle('dark');
     toggle.textContent = body.classList.contains('dark') ? '🌙' : '☀️';
   });
-
-  // Rotating subtitles with fade animation
-  const subtitles = [
-    "Catch the Kaspa Wave: Epic Links for Your BlockDAG Adventure!",
-    "BlockDAG Barrel Roll: Kaspa Links That'll Make You Say 'Whoa, Dude!'",
-    "Surf's Up on Kaspa: Dive into Curated Crypto Links!"
-  ];
-  let currentIndex = 0;
-  const subtitleElement = document.querySelector('.subtitle');
-
-  function rotateSubtitle() {
-    if (!subtitleElement) return;
-    subtitleElement.style.opacity = 0;
-    setTimeout(() => {
-      subtitleElement.textContent = subtitles[currentIndex];
-      currentIndex = (currentIndex + 1) % subtitles.length;
-      subtitleElement.style.opacity = 1;
-    }, 500);
-  }
-  setInterval(rotateSubtitle, 10000);
 </script>
 </body>
 </html>
