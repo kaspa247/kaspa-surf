@@ -147,7 +147,8 @@ setInterval(loadKaspaPrice, 60000);
             <button class="ks-btn" data-range="6">6h</button>
             <button class="ks-btn" data-range="24">24h</button>
             <button class="ks-btn" data-range="72">3d</button>
-            <button class="ks-btn" id="ks-clear">Clear</button>
+            <button class="ks-btn" id="ks-clear">Clear Graph</button>
+            <button class="ks-btn" id="ks-clear-all">Clear Cache</button>
           </div>
         </div>
         <canvas id="ks-chart" height="110"></canvas>
@@ -242,6 +243,15 @@ setInterval(loadKaspaPrice, 60000);
     // ========= STATE =========
     let rangeHours = 24;
     let lastData = loadJSON(LAST_TICKER_KEY, null);
+    // If cached ticker is older than 10 minutes, ignore it
+if (lastData?.timestamp) {
+  const ts = new Date(lastData.timestamp).valueOf();
+  if (Number.isFinite(ts) && (Date.now() - ts > 10 * 60 * 1000)) {
+    lastData = null;
+    try { localStorage.removeItem(LAST_TICKER_KEY); } catch {}
+  }
+}
+
 
     // ========= UI RENDER =========
     function spreadPct(last, vwap) {
@@ -424,15 +434,11 @@ setInterval(loadKaspaPrice, 60000);
     }
 
     async function fetchTickerSmart() {
-      // First try: normal fetch (lets browser/edge cache do its thing)
-      const url = `${API}${TICKER_PATH}`;
-      let r = await fetch(url, { cache: "default" });
-
-      // If the response is stale (or not ok), retry with cache-bust once.
-      if (!r.ok) {
-        const bust = `${url}?_=${Date.now()}`;
-        r = await fetch(bust, { cache: "no-store" });
-      } else {
+  const url = `${API}${TICKER_PATH}?_=${Date.now()}`;  // ALWAYS cache-bust
+  const r = await fetch(url, { cache: "no-store" });
+  if (!r.ok) throw new Error(`API HTTP ${r.status}`);
+  return r.json();
+} else {
         // Optional: if data timestamp is older than 2 minutes, refresh once.
         const clone = r.clone();
         const d = await clone.json().catch(() => null);
@@ -541,6 +547,14 @@ setInterval(loadKaspaPrice, 60000);
       localStorage.removeItem(CHART_KEY);
       if (window.__kaspaSurfChart) renderChart(window.__kaspaSurfChart, []);
     });
+
+    el("ks-clear-all").addEventListener("click", () => {
+  try { localStorage.removeItem(CHART_KEY); } catch {}
+  try { localStorage.removeItem(LAST_TICKER_KEY); } catch {}
+  lastData = null;
+  renderTableFromState();
+  refreshTicker({ silent: false });
+});
 
     el("ks-filter").addEventListener("input", () => renderTableFromState());
     el("ks-sort").addEventListener("change", () => renderTableFromState());
