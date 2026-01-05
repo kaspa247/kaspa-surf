@@ -433,20 +433,12 @@ if (lastData?.timestamp) {
       return Number.isFinite(ts) ? ts : NaN;
     }
 
-    async function fetchTickerSmart() {
-  const url = `${API}${TICKER_PATH}?_=${Date.now()}`;  // ALWAYS cache-bust
+async function fetchTickerSmart() {
+  const url = `${API}${TICKER_PATH}?_=${Date.now()}`; // ALWAYS cache-bust
   const r = await fetch(url, { cache: "no-store" });
   if (!r.ok) throw new Error(`API HTTP ${r.status}`);
   return r.json();
-} else {
-        // Optional: if data timestamp is older than 2 minutes, refresh once.
-        const clone = r.clone();
-        const d = await clone.json().catch(() => null);
-        const ts = getTimestampMs(d);
-        const stale = Number.isFinite(ts) ? (Date.now() - ts > 120_000) : false;
-        if (stale) {
-          const bust = `${url}?_=${Date.now()}`;
-          r = await fetch(bust, { cache: "no-store" });
+}
         } else {
           // return the parsed one we already have
           return d;
