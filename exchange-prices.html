@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -82,13 +82,7 @@ async function loadKaspaPrice() {
 
     // pick an exchange with a valid last + change_pct (for a "24h change" display)
     const best = (d.exchanges || [])
-      .filter(x =>
-  x.last != null ||
-  x.high != null ||
-  x.low != null ||
-  x.volume_24h != null ||
-  x.change_pct != null
-)
+      .filter(x => x && x.last != null && x.change_pct != null)
       .sort((a, b) => (b.volume_24h ?? 0) - (a.volume_24h ?? 0))[0];
 
     const changePct = best?.change_pct;
@@ -317,6 +311,7 @@ setInterval(loadKaspaPrice, 60000);
           : "Updated: —";
     }
 
+    // ✅ UPDATED FUNCTION: shows exchanges even if x.last is null
     function renderTableFromState() {
       const d = lastData;
       const tbody = el("ks-tbody");
@@ -334,9 +329,20 @@ setInterval(loadKaspaPrice, 60000);
 
       const rows = (d.exchanges || [])
         .filter(x => x && x.exchange)
-        .filter(x => x.last != null)
         .filter(x => !filter || x.exchange.toLowerCase().includes(filter))
-        .map(x => ({ ...x, spread_vs_vwap: spreadPct(x.last, vwap) }))
+        // keep exchanges with any meaningful fields (not just last)
+        .filter(x =>
+          x.last != null ||
+          x.high != null ||
+          x.low != null ||
+          x.volume_24h != null ||
+          x.change_pct != null
+        )
+        // spread only when last and vwap exist
+        .map(x => ({
+          ...x,
+          spread_vs_vwap: (x.last == null || vwap == null) ? null : spreadPct(x.last, vwap)
+        }))
         .sort((a, b) => {
           const av = (a[key] == null ? -Infinity : a[key]);
           const bv = (b[key] == null ? -Infinity : b[key]);
@@ -356,10 +362,12 @@ setInterval(loadKaspaPrice, 60000);
         const sp = x.spread_vs_vwap;
         const spText = sp == null ? "—" : `${sp.toFixed(2)}%`;
 
+        const lastText = (x.last == null) ? "—" : `$${fmtUsd(x.last, 5)}`;
+
         tbody.insertAdjacentHTML("beforeend", `
           <tr>
             <td class="mono">${x.exchange}</td>
-            <td class="r mono">$${fmtUsd(x.last, 5)}</td>
+            <td class="r mono">${lastText}</td>
             <td class="r mono">${x.high == null ? "—" : `$${fmtUsd(x.high, 5)}`}</td>
             <td class="r mono">${x.low  == null ? "—" : `$${fmtUsd(x.low, 5)}`}</td>
             <td class="r mono">${x.volume_24h == null ? "—" : fmtNum(x.volume_24h)}</td>
@@ -617,6 +625,7 @@ setInterval(loadKaspaPrice, 60000);
   const subtitleElement = document.querySelector('.subtitle');
 
   function rotateSubtitle() {
+    if (!subtitleElement) return;
     subtitleElement.style.opacity = 0;
     setTimeout(() => {
       subtitleElement.textContent = subtitles[currentIndex];
