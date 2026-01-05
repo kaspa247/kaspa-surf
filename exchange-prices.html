@@ -82,7 +82,13 @@ async function loadKaspaPrice() {
 
     // pick an exchange with a valid last + change_pct (for a "24h change" display)
     const best = (d.exchanges || [])
-      .filter(x => x && x.last != null && x.change_pct != null)
+      .filter(x =>
+  x.last != null ||
+  x.high != null ||
+  x.low != null ||
+  x.volume_24h != null ||
+  x.change_pct != null
+)
       .sort((a, b) => (b.volume_24h ?? 0) - (a.volume_24h ?? 0))[0];
 
     const changePct = best?.change_pct;
